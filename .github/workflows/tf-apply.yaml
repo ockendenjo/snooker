@@ -47,7 +47,7 @@ jobs:
           aws s3 cp "s3://${INPUTS_BUCKET}/${INPUTS_ENV}.auto.tfvars" tfvars/
           aws s3 cp "s3://${INPUTS_BUCKET}/${INPUTS_ENV}.backend.tfvars" tfvars/
         env:
-          INPUTS_ENV: ${{ inputs.env }}
+          INPUTS_ENV: ${{ inputs.environment }}
           INPUTS_BUCKET: ${{ secrets.STATE_BUCKET }}
 
       - name: Terraform apply
@@ -56,4 +56,4 @@ jobs:
           terraform init -backend-config="tfvars/${INPUTS_ENV}.backend.tfvars"
           terraform apply -auto-approve -var-file="tfvars/${INPUTS_ENV}.auto.tfvars" -input=false
         env:
-          INPUTS_ENV: ${{ inputs.env }}
+          INPUTS_ENV: ${{ inputs.environment }}
