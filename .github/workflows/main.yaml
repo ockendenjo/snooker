@@ -1,0 +1,33 @@
+name: Deploy main
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: main
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate
+    uses: ./.github/workflows/validate.yaml
+
+  tf-dev:
+    name: tf-dev
+    needs: [validate]
+    concurrency:
+      group: dev
+    permissions:
+      id-token: write # OIDC authentication with AWS
+      contents: read
+    uses: ./.github/workflows/tf-apply.yaml
+    with:
+      environment: dev
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}

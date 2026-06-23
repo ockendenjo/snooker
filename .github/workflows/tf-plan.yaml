@@ -1,0 +1,68 @@
+name: Terraform plan
+
+on:
+  workflow_call:
+    secrets:
+      AWS_ROLE_ARN:
+        required: true
+      STATE_BUCKET:
+        required: true
+      AWS_ACCOUNT_ID:
+        required: true
+    inputs:
+      manifest_file:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    name: Plan
+    timeout-minutes: 2
+    runs-on: ubuntu-latest
+    environment: dev
+    permissions:
+      id-token: write # OIDC authentication with AWS
+      contents: read
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
+
+      - name: Assume role
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
+        with:
+          aws-region: 'eu-west-1'
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+
+      - name: Pull terraform config
+        working-directory: stack
+        shell: bash
+        run: |
+          mkdir -p tfvars
+          aws s3 cp "s3://${INPUTS_BUCKET}/dev.auto.tfvars" tfvars/
+          aws s3 cp "s3://${INPUTS_BUCKET}/dev.backend.tfvars" tfvars/
+        env:
+          INPUTS_BUCKET: ${{ secrets.STATE_BUCKET }}
+
+#      - name: Update manifest file
+#        shell: bash
+#        working-directory: stack
+#        env:
+#          MANIFEST_FILE: ${{ inputs.manifest_file }}
+#          TFVARS_FILE: ${{ inputs.tfvars }}
+#        run: |
+#          sed -i "s#manifest_file[[:space:]]*=[[:space:]]*\"default.json\"#manifest_file = \"$MANIFEST_FILE\"#" "$TFVARS_FILE"
+#          cat "$TFVARS_FILE"
+
+      - name: Terraform plan
+        working-directory: stack
+        run: |
+          terraform init -backend-config="tfvars/dev.backend.tfvars"
+          terraform plan -var-file="tfvars/dev.auto.tfvars" -input=false
