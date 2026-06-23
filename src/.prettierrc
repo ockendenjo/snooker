@@ -1,0 +1,13 @@
+{
+    "tabWidth": 4,
+    "bracketSpacing": false,
+    "overrides": [
+        {
+            "files": "*.html",
+            "options": {
+                "parser": "angular"
+            }
+        }
+    ],
+    "htmlWhitespaceSensitivity": "css"
+}
