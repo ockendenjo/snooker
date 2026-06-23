@@ -44,10 +44,11 @@ jobs:
         shell: bash
         run: |
           mkdir -p tfvars
-          aws s3 cp s3://${{ secrets.STATE_BUCKET }}/${INPUTS_ENV}.auto.tfvars tfvars/
-          aws s3 cp s3://${{ secrets.STATE_BUCKET }}/${INPUTS_ENV}.backend.tfvars tfvars/
+          aws s3 cp "s3://${INPUTS_BUCKET}/${INPUTS_ENV}.auto.tfvars" tfvars/
+          aws s3 cp "s3://${INPUTS_BUCKET}/${INPUTS_ENV}.backend.tfvars" tfvars/
         env:
           INPUTS_ENV: ${{ inputs.env }}
+          INPUTS_BUCKET: ${{ secrets.STATE_BUCKET }}
 
       - name: Terraform apply
         working-directory: stack
