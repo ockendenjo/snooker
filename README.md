@@ -11,6 +11,18 @@ environment: AWS_PROFILE=snooker
 terraform apply -var-file=tfvars/dev.auto.tfvars -auto-approve
 ```
 
+### format
+
+requires: format-tf
+
+### format-tf
+
+directory: stack
+
+```shell
+terraform fmt --recursive
+```
+
 ### init
 
 directory: stack
