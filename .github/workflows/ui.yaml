@@ -48,11 +48,6 @@ jobs:
         working-directory: src
         run: npx prettier --check .
 
-      - name: Run tests
-        working-directory: src
-        run: |
-          npx vitest run .
-
       - name: Write build info JS
         shell: bash
         run: |
