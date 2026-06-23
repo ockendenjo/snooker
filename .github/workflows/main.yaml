@@ -31,3 +31,17 @@ jobs:
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
       STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
+
+  ui-dev:
+    name: UI (dev)
+    needs: [tf-dev]
+    permissions:
+      id-token: write # OIDC authentication with AWS
+      contents: read
+    uses: ./.github/workflows/ui.yaml
+    with:
+      environment: dev
+      upload_ui: true
+    secrets:
+     AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+     WEB_BUCKET: ${{ secrets.WEB_BUCKET }}

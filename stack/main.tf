@@ -27,6 +27,6 @@ provider "aws" {
 output "github_env" {
   description = "Environment variables for GitHub"
   value = {
-
+    WEB_BUCKET = aws_s3_bucket.static_web.id
   }
 }
