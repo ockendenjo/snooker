@@ -52,7 +52,7 @@ jobs:
         shell: bash
         run: |
           COUNT=$(git rev-list --count HEAD)
-          echo "Build version is v.${COUNT}"
+          echo "Build version is v0.${COUNT}"
           echo "export const gitCount = ${COUNT};" > src/src/app/build.ts
 
       - name: Build
