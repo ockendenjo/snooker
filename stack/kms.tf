@@ -33,7 +33,6 @@ resource "aws_kms_key" "main" {
         ]
         Resource = "*"
       },
-      # CloudFront only uses the primary key - no equivalent statement in the replica key policy
       {
         Sid    = "AllowUseFromCloudFront"
         Effect = "Allow"
