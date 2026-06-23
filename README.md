@@ -11,6 +11,14 @@ environment: AWS_PROFILE=snooker
 terraform apply -var-file=tfvars/dev.auto.tfvars -auto-approve
 ```
 
+### build-ui
+
+directory: src
+
+```shell
+npm run build
+```
+
 ### format
 
 requires: format-ts, format-tf
@@ -68,4 +76,12 @@ directory: stack
 mkdir -p tfvars
 aws s3 cp s3://snooker-dev-state-20260609104639313100000001/dev.auto.tfvars tfvars/
 aws s3 cp s3://snooker-dev-state-20260609104639313100000001/dev.backend.tfvars tfvars/
+```
+
+### start
+
+directory: src
+
+```shell
+npm run start
 ```
