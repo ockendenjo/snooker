@@ -13,7 +13,7 @@ terraform apply -var-file=tfvars/dev.auto.tfvars -auto-approve
 
 ### format
 
-requires: format-tf
+requires: format-ts, format-tf
 
 ### format-tf
 
@@ -21,6 +21,14 @@ directory: stack
 
 ```shell
 terraform fmt --recursive
+```
+
+### format-ts
+
+directory: src
+
+```shell
+npx prettier --write .
 ```
 
 ### init
