@@ -236,8 +236,8 @@ resource "aws_cloudfront_distribution" "snooker" {
   }
 }
 
-module "s3_policy" {
-  source = "./s3-policy-cfront"
+module "s3_policy_cloudfront" {
+  source = "github.com/ockendenjo/tfmods//s3-policy-cloudfront"
   bucket = aws_s3_bucket.static_web
   cloudfront_arns = [
     aws_cloudfront_distribution.snooker.arn,
