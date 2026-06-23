@@ -8,6 +8,13 @@ variable "aws_region" {
   type        = string
 }
 
+variable "cloudfront" {
+  type = object({
+    domain          = string
+    certificate_arn = string
+  })
+}
+
 variable "env" {
   description = "Environment name (dev or pro)"
   type        = string
@@ -16,4 +23,9 @@ variable "env" {
     condition     = contains(["dev", "pro"], var.env)
     error_message = "Environment must be either 'dev' or 'pro'."
   }
+}
+
+variable "zone_domain" {
+  description = "Route 53 Hosted Zone ID"
+  type        = string
 }
