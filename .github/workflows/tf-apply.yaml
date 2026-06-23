@@ -1,0 +1,58 @@
+name: Terraform apply
+
+on:
+  workflow_call:
+    secrets:
+      STATE_BUCKET:
+        required: true
+      AWS_ROLE_ARN:
+        required: true
+    inputs:
+      environment:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    name: Apply
+    timeout-minutes: 8
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    permissions:
+      id-token: write # OIDC authentication with AWS
+      contents: read
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
+
+      - name: Assume role
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
+        with:
+          aws-region: 'eu-west-1'
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+
+      - name: Pull terraform config
+        working-directory: stack
+        shell: bash
+        run: |
+          mkdir -p tfvars
+          aws s3 cp s3://${{ secrets.STATE_BUCKET }}/${INPUTS_ENV}.auto.tfvars tfvars/
+          aws s3 cp s3://${{ secrets.STATE_BUCKET }}/${INPUTS_ENV}.backend.tfvars tfvars/
+        env:
+          INPUTS_ENV: ${{ inputs.env }}
+
+      - name: Terraform apply
+        working-directory: stack
+        run: |
+          terraform init -backend-config="tfvars/${INPUTS_ENV}.backend.tfvars"
+          terraform apply -auto-approve -var-file="tfvars/${INPUTS_ENV}.auto.tfvars" -input=false
+        env:
+          INPUTS_ENV: ${{ inputs.env }}

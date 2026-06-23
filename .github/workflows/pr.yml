@@ -1,0 +1,27 @@
+name: PR
+on:
+  pull_request: { }
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate
+    uses: ./.github/workflows/validate.yaml
+
+  tf-plan:
+    name: Terraform
+    permissions:
+      id-token: write # OIDC authentication with AWS
+      contents: read
+    uses: ./.github/workflows/tf-plan.yaml
+    with:
+      manifest_file: ${{ format('pr{0}.json', github.event.pull_request.number) }}
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
