@@ -1,0 +1,122 @@
+@use "sass:map";
+@use "../theme-colors" as pal;
+
+.header {
+    height: 64px;
+    background: map.get(pal.$palettes, secondary, 60);
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+:host {
+    height: 100dvh;
+    width: 100dvw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+mat-sidenav-container {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+nav > div {
+    height: 48px;
+    border-bottom: 1px solid map.get(pal.$palettes, secondary, 60);
+    box-sizing: border-box;
+    padding: 12px 0 12px 22px;
+    vertical-align: center;
+    cursor: pointer;
+
+    &:hover {
+        background: map.get(pal.$palettes, neutral, 80);
+    }
+
+    &.active {
+        padding-left: 16px;
+        border-left: 6px solid map.get(pal.$palettes, secondary, 35);
+        font-weight: bold;
+    }
+}
+
+.dark nav > div {
+    &:hover {
+        background: #444;
+    }
+}
+
+mat-sidenav {
+    border-right: 1px solid map.get(pal.$palettes, secondary, 35);
+    width: 140px;
+
+    --mat-sidenav-container-shape: 0px;
+    --mat-sidenav-container-background-color: #ffffff;
+}
+
+.score-cont {
+    font-weight: bold;
+    color: #44474e;
+    height: 64px;
+    width: 64px;
+    text-align: right;
+    line-height: 64px;
+}
+
+.button-cont {
+    width: 64px;
+    height: 64px;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.menu-button {
+    @media all and (min-width: 601px) {
+        display: none;
+    }
+}
+
+.home {
+    margin-top: 8px;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+}
+
+.header-center {
+    text-align: center;
+    padding: 0 16px;
+}
+
+.fullheight {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.dev-site {
+    background: #ffc000;
+    text-align: center;
+    padding: 4px 8px;
+}
+
+.version {
+    margin: 8px;
+    text-align: right;
+}

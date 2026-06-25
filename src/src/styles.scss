@@ -1,1 +1,103 @@
-/* You can add global styles to this file, and also import other style files */
+@use "@angular/material" as mat;
+@use "./theme-colors" as pal;
+
+html {
+    @include mat.theme(
+        (
+            color: (
+                primary: pal.$primary-palette,
+                theme-type: light,
+            ),
+            typography: Roboto,
+            density: 0,
+        )
+    );
+}
+
+// Dark theme for when .dark class is applied
+.dark {
+    @include mat.theme(
+        (
+            color: (
+                primary: pal.$primary-palette,
+                theme-type: dark,
+            ),
+        )
+    );
+
+    color-scheme: dark;
+    background-color: black;
+    color: #eee;
+}
+
+body {
+    color-scheme: light;
+
+    background-color: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+    font: var(--mat-sys-body-medium);
+
+    margin: 0;
+    height: 100%;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100dvh;
+    width: 100dvw;
+    overflow: hidden;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.center {
+    padding: 0 8px;
+
+    @media (min-width: 1200px) {
+        margin: 0 auto;
+        width: 1200px;
+    }
+}
+
+.content {
+    margin-bottom: 64px;
+}
+
+button {
+    background-color: #044cc9;
+    border: none;
+    border-radius: 15px;
+    height: 30px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.full {
+    height: 100dvh;
+    width: 100dvw;
+    overflow: hidden;
+}
+
+.flex-fill {
+    flex: 1 1 auto;
+}
+
+.dark a {
+    color: cornflowerblue;
+
+    &:hover {
+        color: goldenrod;
+    }
+}
