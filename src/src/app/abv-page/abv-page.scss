@@ -1,0 +1,53 @@
+:host {
+    height: calc(100dvh - 64px);
+    overflow-y: scroll;
+    display: block;
+}
+
+table,
+tr,
+td,
+th {
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+}
+
+td,
+th {
+    padding: 4px 8px;
+}
+
+.red {
+    background: #ee0700;
+    color: white;
+}
+
+.yellow {
+    background: #ffcc00;
+    color: black;
+}
+
+.green {
+    background: #008000;
+    color: white;
+}
+
+.brown {
+    background: #784421;
+    color: white;
+}
+
+.blue {
+    background: #72aaee;
+    color: #001b45;
+}
+
+.pink {
+    background: #fe588e;
+    color: black;
+}
+
+.black {
+    background: #000000;
+    color: white;
+}
