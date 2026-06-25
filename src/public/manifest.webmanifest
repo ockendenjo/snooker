@@ -1,0 +1,23 @@
+{
+    "name": "Snooker",
+    "short_name": "Snooker",
+    "description": "HBT Drinking Challenge",
+    "theme_color": "#b4876d",
+    "background_color": "#ffffff",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/",
+    "icons": [
+        {
+            "src": "pint.png",
+            "sizes": "any",
+            "type": "image/png"
+        },
+        {
+            "src": "pint.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "maskable any"
+        }
+    ]
+}
