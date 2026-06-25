@@ -1,5 +1,6 @@
 import {Routes} from "@angular/router";
 import {HomePage} from "./home-page/home-page";
+import {InfoPage} from "./info-page/info-page";
 import {AbvPage} from "./abv-page/abv-page";
 
 export const routes: Routes = [
@@ -10,5 +11,9 @@ export const routes: Routes = [
     {
         path: "abvs",
         component: AbvPage,
+    },
+    {
+        path: "info",
+        component: InfoPage,
     },
 ];
