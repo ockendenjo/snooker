@@ -36,3 +36,4 @@ stack/tfvars/
 node_modules/
 .angular/
 dist/
+*.orig
