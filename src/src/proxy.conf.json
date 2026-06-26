@@ -1,0 +1,20 @@
+{
+    "/api": {
+        "target": "https://dev.snooker.ockenden.io",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "info"
+    },
+    "/pubs.json": {
+        "target": "https://dev.snooker.ockenden.io",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "info"
+    },
+    "/beer": {
+        "target": "https://dev.snooker.ockenden.io",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "info"
+    }
+}
