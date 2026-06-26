@@ -1,0 +1,9 @@
+:host {
+    height: calc(100dvh - 64px);
+    overflow-y: scroll;
+    display: block;
+}
+
+li {
+    margin-bottom: 8px;
+}
