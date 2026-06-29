@@ -36,7 +36,7 @@ export class SessionService {
         this.getAuthData();
     }
 
-    private getSessionData(refresh = false): Promise<SessionData> {
+    public getSessionData(refresh = false): Promise<SessionData> {
         return this.getAuthData(refresh).then((ad) => {
             if (ad.state == AuthState.SignedIn) {
                 return ad.sessionData;

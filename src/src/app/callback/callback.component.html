@@ -1,0 +1,10 @@
+<div class="center content">
+    @if (loading()) {
+        <p>Signing in...</p>
+    }
+    @if (error()) {
+        <h2>Authentication Error</h2>
+        <p>{{ error() }}</p>
+        <button (click)="router.navigate(['/'])">Return to Home</button>
+    }
+</div>

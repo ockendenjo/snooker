@@ -3,11 +3,16 @@ import {HomePage} from "./home-page/home-page";
 import {InfoPage} from "./info-page/info-page";
 import {AbvPage} from "./abv-page/abv-page";
 import {EdiMapPage} from "./edi-map-page/edi-map-page";
+import {CallbackComponent} from "./callback/callback.component";
 
 export const routes: Routes = [
     {
         path: "",
         component: HomePage,
+    },
+    {
+        path: "callback",
+        component: CallbackComponent,
     },
     {
         path: "abvs",
