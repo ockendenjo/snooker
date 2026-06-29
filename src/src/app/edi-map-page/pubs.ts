@@ -12,7 +12,16 @@ export function addPubsToSource(
     pubs: Pub[],
 ): void {
     const filtered = pubs.filter((p) => {
-        return p.hasRealAle && p.realAles > 0 && !p.tempClosed;
+        if (!p.hasRealAle || p.realAles < 1) {
+            return false;
+        }
+        if (p.tempClosed) {
+            return false;
+        }
+        if (p.chain === "Wetherspoons") {
+            return false;
+        }
+        return true;
     });
     filtered.sort((a, b) => a.realAles - b.realAles);
 

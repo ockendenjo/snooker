@@ -38,4 +38,5 @@ export interface Pub {
     hasRealAle: boolean;
     camraID?: number;
     tempClosed?: boolean;
+    chain?: string;
 }
