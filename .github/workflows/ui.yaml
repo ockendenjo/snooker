@@ -48,6 +48,10 @@ jobs:
         working-directory: src
         run: npx prettier --check .
 
+      - name: Check linting
+        working-directory: src
+        run: npx eslint
+
       - name: Write build info JS
         shell: bash
         run: |

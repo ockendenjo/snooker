@@ -25,7 +25,7 @@ export function addPubsToSource(
     });
     filtered.sort((a, b) => a.realAles - b.realAles);
 
-    filtered.forEach((p, idx) => {
+    filtered.forEach((p) => {
         const iconFeature = new Feature({
             geometry: new Point(fromLonLat([p.lon, p.lat])),
             pub: p,
