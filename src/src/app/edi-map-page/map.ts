@@ -104,9 +104,5 @@ function getPopupHTML(pub: Pub): string {
 
     html += `<div><a href="https://camra.org.uk/pubs/${pub.camraID}" target="_blank">CAMRA listing for pub</a></div>`;
 
-    if (pub.tempClosed) {
-        html += `<div class="closed">Reported as temporarily closed. If closed: pick any other nearby pub with Real Ale, but log the drink as at ${pub.name}.</div>`;
-    }
-
     return html;
 }

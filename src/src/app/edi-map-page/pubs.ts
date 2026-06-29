@@ -11,7 +11,9 @@ export function addPubsToSource(
     farSource: VectorSource,
     pubs: Pub[],
 ): void {
-    const filtered = pubs.filter((p) => p.hasRealAle && p.realAles > 0);
+    const filtered = pubs.filter((p) => {
+        return p.hasRealAle && p.realAles > 0 && !p.tempClosed;
+    });
     filtered.sort((a, b) => a.realAles - b.realAles);
 
     filtered.forEach((p, idx) => {
