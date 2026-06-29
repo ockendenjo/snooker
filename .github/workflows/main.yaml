@@ -13,13 +13,30 @@ permissions:
   contents: read
 
 jobs:
+  test-go:
+    name: Go
+    uses: ./.github/workflows/go-test.yaml
+
+  cmd:
+    name: Go
+    uses: ./.github/workflows/cmd.yaml
+    permissions:
+      id-token: write # OIDC authentication with AWS
+      contents: read
+    with:
+      upload: true
+      manifest_file: default.json
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      BINARY_BUCKET: ${{ secrets.BINARY_BUCKET }}
+
   validate:
     name: Validate
     uses: ./.github/workflows/validate.yaml
 
   tf-dev:
     name: tf-dev
-    needs: [validate]
+    needs: [cmd, test-go, validate]
     concurrency:
       group: dev
     permissions:
