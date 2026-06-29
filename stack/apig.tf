@@ -34,7 +34,7 @@ resource "aws_api_gateway_authorizer" "main" {
   authorizer_result_ttl_in_seconds = 1
 }
 
-resource "aws_api_gateway_stage" "api2" {
+resource "aws_api_gateway_stage" "stg" {
   deployment_id = aws_api_gateway_deployment.main.id
   rest_api_id   = aws_api_gateway_rest_api.main.id
   stage_name    = "stg"
