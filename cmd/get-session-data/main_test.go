@@ -6,7 +6,6 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/ockendenjo/handler"
-	"github.com/ockendenjo/snooker/pkg/drinks"
 	"github.com/ockendenjo/snooker/pkg/testing/teststubs"
 	"github.com/ockendenjo/snooker/pkg/user"
 	"github.com/stretchr/testify/assert"
@@ -23,18 +22,9 @@ func Test_LettersInProgress(t *testing.T) {
 			}, nil
 		},
 	}
-	dc := &teststubs.MockDrinksClient{
-		ListInProgressDrinksFn: func(ctx context.Context, userID string) ([]*drinks.Drink, error) {
-			return []*drinks.Drink{
-				{Letter: "A"},
-				{Letter: "B", NotInWord: true},
-			}, nil
-		},
-	}
 
 	h := &lambdaHandler{
-		drinksClient: dc,
-		userClient:   uc,
+		userClient: uc,
 	}
 	event := events.APIGatewayProxyRequest{
 		RequestContext: events.APIGatewayProxyRequestContext{
@@ -49,6 +39,5 @@ func Test_LettersInProgress(t *testing.T) {
 	sd, err := h.handle(handler.Get(t.Context()), event)
 	require.NoError(t, err)
 
-	exp := []string{"A"}
-	assert.Equal(t, exp, sd.Letters)
+	assert.Equal(t, "user@example.com", sd.Email)
 }

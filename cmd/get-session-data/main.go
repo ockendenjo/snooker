@@ -9,7 +9,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/ockendenjo/handler"
 	"github.com/ockendenjo/snooker/pkg/apighandler"
-	"github.com/ockendenjo/snooker/pkg/drinks"
 	"github.com/ockendenjo/snooker/pkg/session"
 	"github.com/ockendenjo/snooker/pkg/user"
 )
@@ -17,12 +16,10 @@ import (
 func main() {
 	handler.BuildAndStart(func(awsConfig aws.Config) handler.Handler[events.APIGatewayProxyRequest, events.APIGatewayProxyResponse] {
 		userTable := handler.MustGetEnv("USER_TABLE_NAME")
-		drinksTable := handler.MustGetEnv("DRINKS_TABLE_NAME")
 		ddbClient := dynamodb.NewFromConfig(awsConfig)
 
 		h := &lambdaHandler{
-			userClient:   user.NewClient(ddbClient, userTable),
-			drinksClient: drinks.NewClient(ddbClient, drinksTable),
+			userClient: user.NewClient(ddbClient, userTable),
 		}
 
 		return apighandler.GetHandler(h.handle, http.StatusOK)
@@ -30,8 +27,7 @@ func main() {
 }
 
 type lambdaHandler struct {
-	userClient   user.Client
-	drinksClient drinks.Client
+	userClient user.Client
 }
 
 func (h *lambdaHandler) handle(ctx *handler.Context, event events.APIGatewayProxyRequest) (*session.Data, error) {
