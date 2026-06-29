@@ -10,9 +10,22 @@ permissions:
   contents: read
 
 jobs:
-  validate:
-    name: Validate
-    uses: ./.github/workflows/validate.yaml
+  test:
+    name: Go
+    uses: ./.github/workflows/go-test.yaml
+
+  cmd:
+    name: Go
+    permissions:
+      id-token: write # OIDC authentication with AWS
+      contents: read
+    uses: ./.github/workflows/cmd.yaml
+    with:
+      upload: true
+      manifest_file: ${{ format('pr{0}.json', github.event.pull_request.number) }}
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      BINARY_BUCKET: ${{ secrets.BINARY_BUCKET }}
 
   ui:
     name: UI
@@ -24,8 +37,13 @@ jobs:
       environment: dev
       upload_ui: false
 
+  validate:
+    name: Validate
+    uses: ./.github/workflows/validate.yaml
+
   tf-plan:
     name: Terraform
+    needs: [cmd]
     permissions:
       id-token: write # OIDC authentication with AWS
       contents: read
