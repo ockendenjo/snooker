@@ -1,0 +1,25 @@
+:host {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: block;
+}
+
+.pad {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+#map {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.info {
+    margin-left: 8px;
+}
