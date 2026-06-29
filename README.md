@@ -11,6 +11,12 @@ environment: AWS_PROFILE=snooker
 terraform apply -var-file=tfvars/dev.auto.tfvars -auto-approve
 ```
 
+### build-cmd
+
+```shell
+go run ./scripts/build-cmd --zip
+```
+
 ### build-ui
 
 directory: src
@@ -78,10 +84,24 @@ aws s3 cp s3://snooker-dev-state-20260609104639313100000001/dev.auto.tfvars tfva
 aws s3 cp s3://snooker-dev-state-20260609104639313100000001/dev.backend.tfvars tfvars/
 ```
 
+### sast
+
+```shell
+wget -O .golangci.json https://raw.githubusercontent.com/ockendenjo/actions/refs/heads/main/.golangci.json
+golangci-lint run
+govulncheck ./...
+```
+
 ### start
 
 directory: src
 
 ```shell
 npm run start
+```
+
+### test
+
+```shell
+go test -json $(go list ./... | grep -v /e2e) | tparse
 ```
