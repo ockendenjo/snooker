@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {AfterViewInit, Component, OnInit} from "@angular/core";
 import {Pub, PubsService} from "../services/pubs.service";
 import {renderMap} from "./map";
 
@@ -6,14 +6,40 @@ import {renderMap} from "./map";
     selector: "app-edi-map-page",
     imports: [],
     templateUrl: "./edi-map-page.html",
-    styleUrl: "./edi-map-page.scss",
+    styleUrls: ["./edi-map-page.scss", "../popup.scss"],
 })
-export class EdiMapPage implements OnInit {
+export class EdiMapPage implements OnInit, AfterViewInit {
+    private initFinished = false;
+    private viewInitFinished = false;
+
+    private pubs: Pub[] = [];
+
     constructor(private readonly pubsSvc: PubsService) {}
 
     ngOnInit() {
         this.pubsSvc.getPubs().then((pubs: Pub[]) => {
-            renderMap(pubs, () => {});
+            this.pubs = pubs;
+            this.initFinished = true;
+            this.checkFunc();
         });
+    }
+
+    ngAfterViewInit() {
+        setTimeout(() => {
+            this.viewInitFinished = true;
+            this.checkFunc();
+        }, 0);
+    }
+
+    private checkFunc() {
+        if (this.initFinished && this.viewInitFinished) {
+            renderMap(this.pubs, (pubID: number) => {
+                this.navigateTo(pubID);
+            });
+        }
+    }
+
+    private navigateTo(_: number) {
+        //FIXME - implement this later
     }
 }

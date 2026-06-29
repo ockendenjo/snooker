@@ -2,14 +2,17 @@ import VectorSource from "ol/source/Vector";
 import {Feature} from "ol";
 import {Point} from "ol/geom";
 import {fromLonLat} from "ol/proj";
-import {Fill, RegularShape, Stroke, Style} from "ol/style";
+import {Fill, Stroke, Style} from "ol/style";
 import {Pub} from "../services/pubs.service";
+import CircleStyle from "ol/style/Circle";
 
 export function addPubsToSource(
-    selectedSource: VectorSource,
+    nearSource: VectorSource,
+    farSource: VectorSource,
     pubs: Pub[],
 ): void {
-    const filtered = pubs.filter((p) => p.hasRealAle);
+    const filtered = pubs.filter((p) => p.hasRealAle && p.realAles > 0);
+    filtered.sort((a, b) => a.realAles - b.realAles);
 
     filtered.forEach((p, idx) => {
         const iconFeature = new Feature({
@@ -17,19 +20,52 @@ export function addPubsToSource(
             pub: p,
         });
 
-        iconFeature.setStyle(getStyle());
-        selectedSource.addFeature(iconFeature);
+        iconFeature.setStyle(getStyle(p));
+        if (isNear(p)) {
+            nearSource.addFeature(iconFeature);
+        } else {
+            farSource.addFeature(iconFeature);
+        }
     });
 }
 
-function getStyle() {
+function isNear(p: Pub): boolean {
+    const addr = p.address.toLowerCase();
+    if (addr.includes("eh1 ")) {
+        return true;
+    }
+    if (addr.includes("eh2 ")) {
+        return true;
+    }
+    if (addr.includes("eh3 ")) {
+        return true;
+    }
+    return false;
+}
+
+function getStyle(p: Pub) {
     return new Style({
-        image: new RegularShape({
-            points: 4,
-            radius: 20,
-            angle: Math.PI / 4,
-            fill: new Fill({color: "red"}),
-            stroke: new Stroke({color: "white", width: 1}),
+        image: new CircleStyle({
+            radius: 8,
+            fill: new Fill({color: getFill(p.realAles)}),
+            stroke: new Stroke({color: "#888", width: 1}),
         }),
     });
+}
+
+function getFill(numRealAles: number): string {
+    switch (numRealAles) {
+        case 0:
+            return "#ffffe5";
+        case 1:
+            return "#feeaa1";
+        case 2:
+            return "#feba4a";
+        case 3:
+            return "#ee7918";
+        case 4:
+            return "#b74304";
+        default:
+            return "#662506";
+    }
 }

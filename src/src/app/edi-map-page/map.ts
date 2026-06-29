@@ -18,9 +18,15 @@ export function renderMap(pubs: Pub[], navigateToLog: (pubID: number) => void) {
         opacity: 0.5,
     });
 
-    const selectedSource = new VectorSource({wrapX: false});
-    const selectedLayer = new VectorLayer({
-        source: selectedSource,
+    const nearSource = new VectorSource({wrapX: false});
+    const nearLayer = new VectorLayer({
+        source: nearSource,
+        visible: true,
+    });
+
+    const farSource = new VectorSource({wrapX: false});
+    const farLayer = new VectorLayer({
+        source: farSource,
         visible: true,
     });
 
@@ -32,7 +38,7 @@ export function renderMap(pubs: Pub[], navigateToLog: (pubID: number) => void) {
         map = new OLMap({
             controls: defaultControls().extend([new ScaleLine()]),
             target: "map",
-            layers: [osmLayer, selectedLayer],
+            layers: [osmLayer, farLayer, nearLayer],
             keyboardEventTarget: document,
             view: mapView,
         });
@@ -59,7 +65,7 @@ export function renderMap(pubs: Pub[], navigateToLog: (pubID: number) => void) {
             const properties = feature.getProperties();
             const pub = properties["pub"] as Pub;
 
-            content.innerHTML = getPopupHTML("", pub);
+            content.innerHTML = getPopupHTML(pub);
 
             const logBtn = document.createElement("button");
             logBtn.textContent = "Log a drink here";
@@ -80,15 +86,15 @@ export function renderMap(pubs: Pub[], navigateToLog: (pubID: number) => void) {
 
     initialiseMap();
 
-    addPubsToSource(selectedSource, pubs);
+    addPubsToSource(nearSource, farSource, pubs);
 
-    mapView.fit(selectedSource.getExtent() as Extent, {
+    mapView.fit(nearSource.getExtent() as Extent, {
         padding: [20, 20, 20, 20],
     });
 }
 
-function getPopupHTML(letter: string, pub: Pub): string {
-    let html = `<div><b>${letter}</b> - ${pub.name}</div>`;
+function getPopupHTML(pub: Pub): string {
+    let html = `<div>${pub.name}</div>`;
 
     if (pub.hasRealAle) {
         html += `<div>We think this pub serves ${pub.realAles} real ale${pub.realAles == 1 ? "" : "s"}</div>`;
