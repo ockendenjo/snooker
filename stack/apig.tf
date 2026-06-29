@@ -1,6 +1,6 @@
 resource "aws_api_gateway_rest_api" "main" {
-  name        = "bogale-api-${var.env}"
-  description = "Bogale (${var.env})"
+  name        = "snooker-api-${var.env}"
+  description = "Snooker (${var.env})"
 
   disable_execute_api_endpoint = false
 
@@ -26,7 +26,7 @@ resource "aws_api_gateway_deployment" "main" {
 }
 
 resource "aws_api_gateway_authorizer" "main" {
-  name                             = "bogale-cognito-${var.env}"
+  name                             = "snooker-cognito-${var.env}"
   type                             = "COGNITO_USER_POOLS"
   provider_arns                    = [aws_cognito_user_pool.main.arn]
   rest_api_id                      = aws_api_gateway_rest_api.main.id

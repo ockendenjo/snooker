@@ -1,6 +1,6 @@
 module "lambda_get_session_data" {
   source                   = "github.com/ockendenjo/tfmods//lambda"
-  project_name             = "bogale"
+  project_name             = "snooker"
   aws_env                  = var.env
   name                     = "get-session-data"
   permissions_boundary_arn = var.permissions_boundary_arn
