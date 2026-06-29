@@ -33,13 +33,13 @@ export class EdiMapPage implements OnInit, AfterViewInit {
 
     private checkFunc() {
         if (this.initFinished && this.viewInitFinished) {
-            renderMap(this.pubs, (pubID: number) => {
-                this.navigateTo(pubID);
+            renderMap(this.pubs, () => {
+                this.navigateTo();
             });
         }
     }
 
-    private navigateTo(_: number) {
+    private navigateTo() {
         //FIXME - implement this later
     }
 }
