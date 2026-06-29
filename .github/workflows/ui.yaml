@@ -61,7 +61,7 @@ jobs:
 
       - name: Build
         working-directory: src
-        run: npx ng build #--configuration aws-${INPUTS_ENVIRONMENT}
+        run: npx ng build --configuration aws-${INPUTS_ENVIRONMENT}
         env:
           INPUTS_ENVIRONMENT: ${{ inputs.environment }}
 
