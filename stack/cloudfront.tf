@@ -97,18 +97,18 @@ resource "aws_cloudfront_distribution" "snooker" {
     origin_access_control_id = aws_cloudfront_origin_access_control.s3.id
   }
 
-  # origin {
-  #   domain_name = "${module.app_ew1.apig.id}.execute-api.${var.aws_region}.amazonaws.com"
-  #   origin_path = "/stg"
-  #   origin_id   = "apig"
-  #
-  #   custom_origin_config {
-  #     http_port              = 80
-  #     https_port             = 443
-  #     origin_protocol_policy = "https-only"
-  #     origin_ssl_protocols   = ["TLSv1.2"]
-  #   }
-  # }
+  origin {
+    domain_name = "${aws_api_gateway_rest_api.main.id}.execute-api.${var.aws_region}.amazonaws.com"
+    origin_path = "/stg"
+    origin_id   = "apig"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
 
   default_cache_behavior {
     target_origin_id       = "s3-static"

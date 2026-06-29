@@ -43,6 +43,7 @@ jobs:
 
   tf-plan:
     name: Terraform
+    needs: [cmd]
     permissions:
       id-token: write # OIDC authentication with AWS
       contents: read
