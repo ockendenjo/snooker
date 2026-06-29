@@ -1,4 +1,12 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from "@angular/core";
+import {
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    computed,
+    inject,
+} from "@angular/core";
+import {toSignal} from "@angular/core/rxjs-interop";
 import {
     Router,
     RouterLink,
@@ -14,7 +22,7 @@ import {MediaMatcher} from "@angular/cdk/layout";
 import {MatIconButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
-import {AuthData, AuthState, SessionService} from "./services/session.service";
+import {AuthState, SessionService} from "./services/session.service";
 import {UpdateService} from "./services/update.service";
 import {NgClass} from "@angular/common";
 import {environment} from "../environments/environment.dev";
@@ -40,13 +48,20 @@ import {gitCount} from "./build";
     styleUrl: "./app.scss",
 })
 export class App implements OnInit, OnDestroy {
-    public authState: AuthState = AuthState.Unknown;
-    private symbol?: symbol;
+    private readonly sessionSvc = inject(SessionService);
+    private readonly authData = toSignal(
+        this.sessionSvc.getAuthDataObservable(),
+        {requireSync: true},
+    );
+
+    public readonly authState = computed(() => this.authData().state);
+    public readonly points = computed(() => {
+        const ad = this.authData();
+        return ad.state === AuthState.SignedIn ? ad.sessionData.points : 0;
+    });
 
     mobileQuery: MediaQueryList;
     darkModeQuery: MediaQueryList;
-
-    public points: number = 0;
     public isDark = false;
 
     private readonly _mobileQueryListener: () => void;
@@ -56,7 +71,6 @@ export class App implements OnInit, OnDestroy {
     constructor(
         changeDetectorRef: ChangeDetectorRef,
         media: MediaMatcher,
-        private readonly sessionSvc: SessionService,
         private readonly router: Router,
         private readonly updateSvc: UpdateService,
     ) {
@@ -93,31 +107,10 @@ export class App implements OnInit, OnDestroy {
     ngOnInit() {
         document.addEventListener("visibilitychange", this._visibilityListener);
         window.addEventListener("focus", this._visibilityListener);
-
-        this.symbol = this.sessionSvc.registerChangeCallback((ad) => {
-            this.processAuthData(ad);
-        });
-
-        this.sessionSvc.getAuthData().then((ad: AuthData) => {
-            this.processAuthData(ad);
-        });
-
         this.isDark = this.darkModeQuery.matches;
     }
 
-    private processAuthData(ad: AuthData) {
-        this.authState = ad.state;
-        if (ad.state == AuthState.SignedIn) {
-            this.points = ad.sessionData.points;
-        } else {
-            this.points = 0;
-        }
-    }
-
     ngOnDestroy(): void {
-        if (this.symbol) {
-            this.sessionSvc.deregisterChangeCallback(this.symbol);
-        }
         document.removeEventListener(
             "visibilitychange",
             this._visibilityListener,

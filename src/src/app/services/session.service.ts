@@ -1,36 +1,42 @@
 import {Injectable} from "@angular/core";
 import {ApiService} from "./api.service";
 import {AuthService} from "./auth.service";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({
     providedIn: "root",
 })
 export class SessionService {
-    private authData?: AuthData;
-    private sessionDataInProg = false;
+    private readonly authDataSubject = new BehaviorSubject<AuthData>({
+        state: AuthState.Unknown,
+    });
 
-    private changeCallbacks: Map<symbol, CallbackFn> = new Map();
-    private progessCallbacks: Set<CallbackFn> = new Set<CallbackFn>();
+    private readonly authData = this.authDataSubject.asObservable();
+
+    public getAuthDataObservable(): Observable<AuthData> {
+        return this.authData;
+    }
+
+    private sessionDataInProg = false;
+    private readonly progressCallbacks: Set<(ad: AuthData) => void> = new Set();
 
     constructor(
         private readonly apiService: ApiService,
         private readonly authService: AuthService,
     ) {
         this.authService.isSignedIn.subscribe((signedIn) => {
-            if (!signedIn && this.authData?.state === AuthState.SignedIn) {
-                this.setAuthState({state: AuthState.NoAuth});
+            if (
+                !signedIn &&
+                this.authDataSubject.getValue().state === AuthState.SignedIn
+            ) {
+                this.authDataSubject.next({state: AuthState.NoAuth});
             }
         });
+
+        this.getAuthData();
     }
 
-    private setAuthState(ad: AuthData): void {
-        this.authData = ad;
-        for (const f of this.changeCallbacks.values()) {
-            f(ad);
-        }
-    }
-
-    public getSessionData(refresh = false): Promise<SessionData> {
+    private getSessionData(refresh = false): Promise<SessionData> {
         return this.getAuthData(refresh).then((ad) => {
             if (ad.state == AuthState.SignedIn) {
                 return ad.sessionData;
@@ -39,14 +45,15 @@ export class SessionService {
         });
     }
 
-    public getAuthData(refresh = false): Promise<AuthData> {
-        if (this.authData && !refresh) {
-            return Promise.resolve(this.authData);
+    private getAuthData(refresh = false): Promise<AuthData> {
+        const current = this.authDataSubject.getValue();
+        if (current.state !== AuthState.Unknown && !refresh) {
+            return Promise.resolve(current);
         }
 
         if (this.sessionDataInProg) {
             return new Promise((r) => {
-                this.progessCallbacks.add(r);
+                this.progressCallbacks.add(r);
             });
         }
 
@@ -70,19 +77,20 @@ export class SessionService {
                     .catch(() => ({state: AuthState.NoAuth}) as AuthData);
             })
             .then((ad) => {
-                this.setAuthState(ad);
-                for (const f of this.progessCallbacks.values()) {
+                this.authDataSubject.next(ad);
+                for (const f of this.progressCallbacks.values()) {
                     f(ad);
                 }
-                this.progessCallbacks.clear();
+                this.progressCallbacks.clear();
                 this.sessionDataInProg = false;
                 return ad;
             });
     }
 
     public isSignedIn(): Promise<AuthState> {
-        if (this.authData) {
-            return Promise.resolve(this.authData.state);
+        const current = this.authDataSubject.getValue();
+        if (current.state !== AuthState.Unknown) {
+            return Promise.resolve(current.state);
         }
         return this.getAuthData().then((ad) => ad.state);
     }
@@ -92,26 +100,16 @@ export class SessionService {
         return Promise.resolve();
     }
 
-    /**
-     * Register a listener to be notified of auth state changes
-     * @param fn callback function
-     */
-    public registerChangeCallback(fn: CallbackFn): symbol {
-        const s = Symbol();
-        this.changeCallbacks.set(s, fn);
-        return s;
-    }
-
-    public deregisterChangeCallback(s: symbol): void {
-        this.changeCallbacks.delete(s);
-    }
-
     public setDisplayName(displayName: string): Promise<void> {
         return this.apiService
             .send("setDisplayName", {displayName})
             .then(() => {
-                if (this.authData?.state == AuthState.SignedIn) {
-                    this.authData.sessionData.displayName = displayName;
+                const current = this.authDataSubject.getValue();
+                if (current.state === AuthState.SignedIn) {
+                    this.authDataSubject.next({
+                        ...current,
+                        sessionData: {...current.sessionData, displayName},
+                    });
                 }
             });
     }
@@ -122,8 +120,6 @@ export class SessionService {
         });
     }
 }
-
-type CallbackFn = (authData: AuthData) => void;
 
 export type SessionData = {
     ID: string;
