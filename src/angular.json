@@ -35,12 +35,12 @@
                         ]
                     },
                     "configurations": {
-                        "production": {
+                        "aws-dev": {
                             "budgets": [
                                 {
                                     "type": "initial",
-                                    "maximumWarning": "500kB",
-                                    "maximumError": "1MB"
+                                    "maximumWarning": "1500kB",
+                                    "maximumError": "2MB"
                                 },
                                 {
                                     "type": "anyComponentStyle",
@@ -49,6 +49,28 @@
                                 }
                             ],
                             "serviceWorker": "ngsw-config.json",
+                            "outputHashing": "all"
+                        },
+                        "aws-pro": {
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "1500kB",
+                                    "maximumError": "2MB"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "4kB",
+                                    "maximumError": "8kB"
+                                }
+                            ],
+                            "serviceWorker": "ngsw-config.json",
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.dev.ts",
+                                    "with": "src/environments/environment.pro.ts"
+                                }
+                            ],
                             "outputHashing": "all"
                         },
                         "development": {
