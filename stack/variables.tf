@@ -15,6 +15,15 @@ variable "cloudfront" {
   })
 }
 
+variable "cognito" {
+  type = object({
+    domain_prefix    = string
+    google_client_id = string
+    callback_urls    = list(string)
+    logout_urls      = list(string)
+  })
+}
+
 variable "env" {
   description = "Environment name (dev or pro)"
   type        = string
