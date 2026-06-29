@@ -41,7 +41,7 @@ resource "aws_cognito_managed_login_branding" "client" {
 }
 
 data "aws_ssm_parameter" "google_client_secret" {
-  name = "/hbt/${var.env}/google/client_secret"
+  name = "/snooker/${var.env}/google/client_secret"
 }
 
 resource "aws_cognito_identity_provider" "google" {
