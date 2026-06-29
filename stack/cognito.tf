@@ -27,7 +27,6 @@ resource "aws_cognito_user_pool" "main" {
   }
 }
 
-# Cognito User Pool Domain
 resource "aws_cognito_user_pool_domain" "main" {
   domain                = var.cognito.domain_prefix
   user_pool_id          = aws_cognito_user_pool.main.id
@@ -41,13 +40,10 @@ resource "aws_cognito_managed_login_branding" "client" {
   use_cognito_provided_values = true
 }
 
-# Fetch Google Client Secret from SSM Parameter Store
-# Store the secret first: aws ssm put-parameter --name /snooker/{env}/google/client_secret --value <secret> --type SecureString
 data "aws_ssm_parameter" "google_client_secret" {
-  name = "/snooker/${var.env}/google/client_secret"
+  name = "/hbt/${var.env}/google/client_secret"
 }
 
-# Google Identity Provider
 resource "aws_cognito_identity_provider" "google" {
   user_pool_id  = aws_cognito_user_pool.main.id
   provider_name = "Google"
@@ -70,7 +66,6 @@ resource "aws_cognito_identity_provider" "google" {
   }
 }
 
-# Cognito User Pool Client
 resource "aws_cognito_user_pool_client" "main" {
   name         = "snooker-client-${var.env}"
   user_pool_id = aws_cognito_user_pool.main.id
