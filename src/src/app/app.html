@@ -30,7 +30,9 @@
                 </div>
 
                 @if (authState() === AuthState.SignedIn) {
-                    <!-- nothing yet -->
+                    <div routerLink="profile" routerLinkActive="active">
+                        Profile
+                    </div>
                 }
             </nav>
 
