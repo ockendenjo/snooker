@@ -23,6 +23,12 @@
                             type="string"
                             formControlName="displayName"
                         />
+                        @if (form.get("displayName")?.hasError("maxlength")) {
+                            <mat-error
+                                >Display name must be 50 characters or
+                                fewer</mat-error
+                            >
+                        }
                     </mat-form-field>
                 </div>
 
