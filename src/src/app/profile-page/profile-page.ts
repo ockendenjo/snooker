@@ -8,7 +8,12 @@ import {
     ReactiveFormsModule,
     Validators,
 } from "@angular/forms";
-import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
+import {
+    MatError,
+    MatFormField,
+    MatInput,
+    MatLabel,
+} from "@angular/material/input";
 import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
 import {Router} from "@angular/router";
 import {SessionData, SessionService} from "../services/session.service";
@@ -17,6 +22,7 @@ import {SessionData, SessionService} from "../services/session.service";
     selector: "app-profile-page",
     imports: [
         FormsModule,
+        MatError,
         MatFormField,
         MatInput,
         MatLabel,
@@ -44,7 +50,7 @@ export class ProfilePage implements OnInit {
         formBuilder: FormBuilder,
     ) {
         this.form = formBuilder.group({
-            displayName: ["", [Validators.required, Validators.maxLength(200)]],
+            displayName: ["", [Validators.required, Validators.maxLength(50)]],
         });
         this.formStatus = toSignal(this.form.statusChanges, {
             initialValue: this.form.status,
