@@ -86,14 +86,8 @@
                         (optionSelected)="onPubSelected($event.option.value)"
                     >
                         @for (option of filteredPubs; track option.goodBeerID) {
-                            <mat-option
-                                [value]="option"
-                                [disabled]="option.visited"
-                            >
+                            <mat-option [value]="option">
                                 <div class="pub-row">
-                                    <div class="pub-letter">
-                                        {{ option.letter }}
-                                    </div>
                                     {{ option.name }}
                                 </div>
                             </mat-option>

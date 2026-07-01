@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, OnInit} from "@angular/core";
 import {Pub, PubsService} from "../services/pubs.service";
 import {renderMap} from "./map";
+import {Router} from "@angular/router";
 
 @Component({
     selector: "app-edi-map-page",
@@ -14,7 +15,10 @@ export class EdiMapPage implements OnInit, AfterViewInit {
 
     private pubs: Pub[] = [];
 
-    constructor(private readonly pubsSvc: PubsService) {}
+    constructor(
+        private readonly pubsSvc: PubsService,
+        private readonly router: Router,
+    ) {}
 
     ngOnInit() {
         this.pubsSvc.getPubs().then((pubs: Pub[]) => {
@@ -33,13 +37,13 @@ export class EdiMapPage implements OnInit, AfterViewInit {
 
     private checkFunc() {
         if (this.initFinished && this.viewInitFinished) {
-            renderMap(this.pubs, () => {
-                this.navigateTo();
+            renderMap(this.pubs, (pubCamraID) => {
+                this.navigateTo(pubCamraID);
             });
         }
     }
 
-    private navigateTo() {
-        //FIXME - implement this later
+    private navigateTo(pubID: number) {
+        this.router.navigate(["/log"], {queryParams: {pubID}});
     }
 }

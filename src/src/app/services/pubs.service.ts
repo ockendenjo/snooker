@@ -1,5 +1,4 @@
 import {Injectable} from "@angular/core";
-import {ApiService} from "./api.service";
 
 @Injectable({
     providedIn: "root",
@@ -7,7 +6,7 @@ import {ApiService} from "./api.service";
 export class PubsService {
     private pubs: Pub[] = [];
 
-    constructor(private readonly apiSvc: ApiService) {}
+    constructor() {}
 
     public getPubs(): Promise<Pub[]> {
         if (this.pubs.length > 0) {
@@ -28,7 +27,8 @@ export interface PubsFile {
 }
 
 export interface Pub {
-    goodBeerID: number;
+    camraID: number;
+    goodBeerID?: number;
     lat: number;
     lon: number;
     name: string;
@@ -36,7 +36,6 @@ export interface Pub {
     realAles: number;
     numBeers: number;
     hasRealAle: boolean;
-    camraID?: number;
     tempClosed?: boolean;
     chain?: string;
 }

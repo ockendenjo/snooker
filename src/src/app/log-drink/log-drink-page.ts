@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {
     FormBuilder,
@@ -16,12 +16,7 @@ import {MatRadioModule} from "@angular/material/radio";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {DrinkService, NewDrink} from "../services/drink.service";
-import {
-    Pub,
-    PubsService,
-    SelectedPub,
-    Selections,
-} from "../services/pubs.service";
+import {Pub, PubsService} from "../services/pubs.service";
 import {Beer, BeersService} from "../services/beers.service";
 import {RangeService} from "../services/range.service";
 import {environment} from "../../environments/environment.dev";
@@ -62,7 +57,7 @@ export class LogDrinkPage implements OnInit {
     public detailsForm: FormGroup;
 
     private selectedPubID: number | null = null;
-    private selectedPubs: enrichedPub[] = [];
+    private selectedPubs: Pub[] = [];
     public allBeers: Beer[] = [];
 
     constructor(
@@ -71,6 +66,7 @@ export class LogDrinkPage implements OnInit {
         private readonly beersSvc: BeersService,
         private readonly route: ActivatedRoute,
         private readonly fb: FormBuilder,
+        private readonly cdr: ChangeDetectorRef,
         rangeSvc: RangeService,
     ) {
         this.tooEarly = rangeSvc.isTooEarly();
@@ -108,6 +104,7 @@ export class LogDrinkPage implements OnInit {
                 dayCtrl.disable();
                 timeCtrl.disable();
             }
+            this.cdr.markForCheck();
         });
     }
 
@@ -138,21 +135,20 @@ export class LogDrinkPage implements OnInit {
         }
     }
 
-    public get filteredPubs(): enrichedPub[] {
+    public get filteredPubs(): Pub[] {
         const venue = this.detailsForm.get("venue")!.value ?? "";
         if (!venue) {
             return this.selectedPubs;
         }
         const lower = venue.toLowerCase();
         return this.selectedPubs.filter((s) => {
-            const c = `${s.letter} - ${s.name}`.toLowerCase();
-            return c.includes(lower);
+            return s.name.toLowerCase().includes(lower);
         });
     }
 
-    public onPubSelected(pub: enrichedPub): void {
-        this.selectedPubID = pub.goodBeerID;
-        this.detailsForm.patchValue({venue: `${pub.letter} - ${pub.name}`});
+    public onPubSelected(pub: Pub): void {
+        this.selectedPubID = pub.camraID;
+        this.detailsForm.patchValue({venue: pub.name});
     }
 
     public onBeerSelected(beer: Beer): void {
@@ -194,37 +190,29 @@ export class LogDrinkPage implements OnInit {
             .then((ld) => {
                 this.pageState = PageState.Saved;
                 this.cid = ld.cid;
+                this.cdr.markForCheck();
             })
             .catch((e) => {
                 this.errorStr = e;
                 this.pageState = PageState.Error;
+                this.cdr.markForCheck();
             });
     }
 
     public goDetails(): void {
         this.pageState = PageState.Loading;
 
-        const timestamp = this.getSelectionTimestamp();
         const loadBeers = this.beersSvc.loadAll();
         const loadPubs = this.pubsSvc.getPubs();
-        const loadSelections = this.pubsSvc.getUserSelections(timestamp);
 
-        Promise.all([loadBeers, loadPubs, loadSelections])
-            .then(([beers, pubs, selections]: [Beer[], Pub[], Selections]) => {
+        Promise.all([loadBeers, loadPubs])
+            .then(([beers, pubs]: [Beer[], Pub[]]) => {
                 this.allBeers = beers;
-                const sp = pubs.filter((p) =>
-                    selections.pubs.has(p.goodBeerID),
-                );
-                this.selectedPubs = sp.map((i) => {
-                    const sel = selections.pubs.get(
-                        i.goodBeerID,
-                    ) as SelectedPub;
-                    return {...i, ...sel};
-                });
+                this.selectedPubs = pubs;
 
                 if (this.pubIDFromRoute !== null) {
                     const match = this.selectedPubs.find(
-                        (p) => p.goodBeerID === this.pubIDFromRoute,
+                        (p) => p.camraID === this.pubIDFromRoute,
                     );
                     if (match) {
                         this.onPubSelected(match);
@@ -233,10 +221,12 @@ export class LogDrinkPage implements OnInit {
                 }
 
                 this.pageState = PageState.Details;
+                this.cdr.markForCheck();
             })
             .catch(() => {
                 this.errorStr = "Failed to load pub selections";
                 this.pageState = PageState.Error;
+                this.cdr.markForCheck();
             });
     }
 
