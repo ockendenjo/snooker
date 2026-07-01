@@ -16,6 +16,8 @@ resource "aws_api_gateway_deployment" "main" {
     redeployment = sha1(jsonencode([
       aws_api_gateway_authorizer.main,
       aws_api_gateway_resource.api,
+
+      module.apig_delete_account,
       module.apig_get_session_data,
       module.apig_set_displayname,
     ]))
