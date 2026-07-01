@@ -10,9 +10,19 @@
     }
 }
 
+mat-option.beer {
+    padding: 0;
+}
+
+::ng-deep mat-option.beer .mdc-list-item__primary-text {
+    width: 100%;
+}
+
 .beer-row {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    width: 100%;
 }
 
 .beer-img {
@@ -24,4 +34,53 @@
 .details {
     color: #808080;
     font-size: 0.8em;
+}
+
+.beer-text {
+    flex-grow: 1;
+}
+
+$radius: 10px;
+
+.beer-col-left {
+    width: $radius;
+    height: 2 * $radius;
+    border-top-right-radius: $radius;
+    border-bottom-right-radius: $radius;
+    margin-right: 8px;
+}
+
+.beer-col-right {
+    width: $radius;
+    height: 2 * $radius;
+    border-top-left-radius: $radius;
+    border-bottom-left-radius: $radius;
+}
+
+.red {
+    background: #ee0700;
+}
+
+.yellow {
+    background: #ffcc00;
+}
+
+.green {
+    background: #008000;
+}
+
+.brown {
+    background: #784421;
+}
+
+.blue {
+    background: #72aaee;
+}
+
+.pink {
+    background: #fe588e;
+}
+
+.black {
+    background: #000;
 }
