@@ -1,0 +1,51 @@
+:host {
+    height: calc(100dvh - 64px);
+    overflow-y: scroll;
+    display: block;
+}
+
+.error {
+    color: crimson;
+}
+
+.radios {
+    margin-bottom: 32px;
+}
+
+@media all and (min-width: 432px) {
+    mat-form-field {
+        min-width: 400px;
+    }
+
+    div.row {
+        width: 400px;
+    }
+}
+
+@media all and (max-width: 431px) {
+    mat-form-field,
+    div.row {
+        width: 100%;
+    }
+}
+
+.pub-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.pub-letter {
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    border: 1px solid black;
+    line-height: 32px;
+    margin-right: 8px;
+}
+
+div.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

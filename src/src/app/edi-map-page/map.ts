@@ -70,7 +70,7 @@ export function renderMap(pubs: Pub[], navigateToLog: (pubID: number) => void) {
             const logBtn = document.createElement("button");
             logBtn.textContent = "Log a drink here";
             logBtn.style = "margin-top: 16px;";
-            logBtn.onclick = () => navigateToLog(pub.goodBeerID);
+            logBtn.onclick = () => navigateToLog(pub.camraID);
             content.appendChild(logBtn);
 
             overlay.setPosition(e.coordinate);

@@ -1,0 +1,21 @@
+@if (beer.image) {
+    <img
+        [ngSrc]="'https://assets.untappd.com/site/beer_logos/' + beer.image"
+        [height]="height"
+        [width]="height"
+        alt="Pump clip"
+        referrerpolicy="no-referrer"
+        (error)="handleError($event)"
+    />
+} @else if (beer.breweryImage) {
+    <img
+        [ngSrc]="
+            'https://assets.untappd.com/site/brewery_logos/' + beer.breweryImage
+        "
+        [height]="height"
+        [width]="height"
+        alt="Brewery logo"
+        referrerpolicy="no-referrer"
+        (error)="handleError($event)"
+    />
+}

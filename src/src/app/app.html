@@ -30,6 +30,9 @@
                 </div>
 
                 @if (authState() === AuthState.SignedIn) {
+                    <div routerLink="log" routerLinkActive="active">
+                        Log drink
+                    </div>
                     <div routerLink="profile" routerLinkActive="active">
                         Profile
                     </div>

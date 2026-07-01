@@ -5,7 +5,8 @@ import {AbvPage} from "./abv-page/abv-page";
 import {EdiMapPage} from "./edi-map-page/edi-map-page";
 import {CallbackComponent} from "./callback/callback.component";
 import {ProfilePage} from "./profile-page/profile-page";
-import {requireSignedIn} from "./auth.guards";
+import {requireDisplayName, requireSignedIn} from "./auth.guards";
+import {LogDrinkPage} from "./log-drink/log-drink-page";
 
 export const routes: Routes = [
     {
@@ -32,5 +33,10 @@ export const routes: Routes = [
         path: "profile",
         component: ProfilePage,
         canActivate: [requireSignedIn],
+    },
+    {
+        path: "log",
+        component: LogDrinkPage,
+        canActivate: [requireSignedIn, requireDisplayName],
     },
 ];
