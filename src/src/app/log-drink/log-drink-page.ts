@@ -295,9 +295,3 @@ enum PageState {
     Error = "Error",
     Saved = "Saved",
 }
-
-type enrichedPub = Pub & {
-    letter: string;
-    points: number;
-    visited: boolean;
-};
