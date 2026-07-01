@@ -6,6 +6,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {Beer} from "../services/beers.service";
 import {BeerImageComponent} from "../beer-image/beer-image.component";
 import {searchBeers} from "./search";
+import {NgClass} from "@angular/common";
 
 @Component({
     selector: "app-drink-autocomplete",
@@ -15,6 +16,7 @@ import {searchBeers} from "./search";
         MatInputModule,
         MatAutocompleteModule,
         BeerImageComponent,
+        NgClass,
     ],
     templateUrl: "./drink-autocomplete.component.html",
     styleUrl: "./drink-autocomplete.component.scss",
@@ -39,5 +41,27 @@ export class DrinkAutocompleteComponent {
             return v.name;
         }
         return v;
+    }
+
+    public getColour(b: Beer): string {
+        if (b.abv >= 5.4) {
+            return "black";
+        }
+        if (b.abv >= 5.1) {
+            return "pink";
+        }
+        if (b.abv >= 4.8) {
+            return "blue";
+        }
+        if (b.abv >= 4.5) {
+            return "brown";
+        }
+        if (b.abv >= 4.2) {
+            return "green";
+        }
+        if (b.abv >= 3.9) {
+            return "yellow";
+        }
+        return "red";
     }
 }
