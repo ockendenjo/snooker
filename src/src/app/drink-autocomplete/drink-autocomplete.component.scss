@@ -1,0 +1,27 @@
+@media all and (min-width: 432px) {
+    mat-form-field {
+        min-width: 400px;
+    }
+}
+
+@media all and (max-width: 431px) {
+    mat-form-field {
+        width: 100%;
+    }
+}
+
+.beer-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.beer-img {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+}
+
+.details {
+    color: #808080;
+    font-size: 0.8em;
+}

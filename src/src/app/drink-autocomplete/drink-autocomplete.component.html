@@ -1,0 +1,43 @@
+<mat-form-field class="full-width">
+    <mat-label>Drink name</mat-label>
+
+    <mat-autocomplete
+        #drinkAuto="matAutocomplete"
+        (optionSelected)="beerSelected.emit($event.option.value)"
+        [displayWith]="getBeerText"
+    >
+        @for (beer of filteredBeers; track beer.untappd) {
+            <mat-option [value]="beer">
+                <div class="beer-row">
+                    <div class="beer-img">
+                        <app-beer-image
+                            [beer]="beer"
+                            [height]="40"
+                        ></app-beer-image>
+                    </div>
+                    <div>
+                        <div>{{ beer.name }}</div>
+                        <div class="details">
+                            {{ beer.brewery }}
+                            @if (beer.abv) {
+                                | {{ beer.abv }}%
+                            }
+                            @if (beer.style) {
+                                | {{ beer.style }}
+                            }
+                        </div>
+                    </div>
+                </div>
+            </mat-option>
+        }
+    </mat-autocomplete>
+
+    <input
+        matInput
+        [formControl]="control"
+        id="name"
+        type="text"
+        [matAutocomplete]="drinkAuto"
+        (input)="inputChanged.emit()"
+    />
+</mat-form-field>
