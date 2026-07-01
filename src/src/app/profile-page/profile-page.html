@@ -1,0 +1,63 @@
+<div class="center content">
+    <h1>Profile</h1>
+    @switch (pg().state) {
+        @case ("LOADING") {
+            <p>Loading...</p>
+        }
+        @case ("ERROR") {
+            <p>Something went wrong</p>
+        }
+        @case ("LOADED") {
+            <form (submit)="updateDisplayName()" [formGroup]="form">
+                <p>
+                    Set a display name to log a drink - this will appear on the
+                    leaderboard
+                </p>
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Display name</mat-label>
+                        <input
+                            matInput
+                            placeholder="Display name"
+                            type="string"
+                            formControlName="displayName"
+                        />
+                    </mat-form-field>
+                </div>
+
+                <div>
+                    <button
+                        type="submit"
+                        [disabled]="
+                            formStatus() === 'INVALID' ||
+                            formStatus() === 'DISABLED'
+                        "
+                    >
+                        Update
+                    </button>
+                </div>
+            </form>
+
+            <hr />
+            <h2>Delete account</h2>
+
+            <p>
+                Most data will be deleted immediately but some may be retained
+                in backups for up to 14 days
+            </p>
+
+            <p>This action is non-reversible</p>
+
+            <p>
+                <button (click)="deleteAccount()" [disabled]="deleting()">
+                    @if (deleting()) {
+                        Deleting...
+                    } @else {
+                        Delete account
+                    }
+                </button>
+            </p>
+        }
+    }
+</div>
