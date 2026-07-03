@@ -35,6 +35,16 @@
     align-items: center;
 }
 
+.pub-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.pub-addr {
+    color: #808080;
+    font-size: 0.8em;
+}
+
 .pub-letter {
     width: 32px;
     height: 32px;

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, OnInit, signal} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {
     FormBuilder,
@@ -45,7 +45,7 @@ export class LogDrinkPage implements OnInit {
     public tooEarly = false;
     public tooLate = false;
     public debugUI = false;
-    public pageState: PageState = PageState.Ready;
+    public pageState = signal(PageState.When);
     public errorStr = this.debugUI ? "Something went wrong" : "";
 
     public day0 = 0;
@@ -54,10 +54,13 @@ export class LogDrinkPage implements OnInit {
     protected pubIDFromRoute: number | null = null;
 
     public whenForm: FormGroup;
-    public detailsForm: FormGroup;
+    public pubForm: FormGroup;
+    public drinkForm: FormGroup;
+    public extraForm: FormGroup;
 
     private selectedPubID: number | null = null;
     private selectedPubs: Pub[] = [];
+    public filteredPubs: Pub[] = [];
     public allBeers: Beer[] = [];
 
     constructor(
@@ -83,14 +86,23 @@ export class LogDrinkPage implements OnInit {
             time: [{value: "", disabled: true}, Validators.required],
         });
 
-        this.detailsForm = this.fb.group({
-            venue: ["", Validators.required],
+        this.drinkForm = this.fb.group({
             name: ["", Validators.required],
             brewery: ["", Validators.required],
             untappdID: [null as number | null],
+            abv: [null as number | null, Validators.required],
+        });
+
+        this.pubForm = this.fb.group({
+            venue: ["", Validators.required],
             drunkWith: ["", [Validators.required, Validators.maxLength(100)]],
-            endOfWord: [false],
-            notInWord: [false],
+        });
+
+        this.pubForm.get("venue")!.valueChanges.subscribe(() => {
+            this.updateFilteredPubs();
+        });
+
+        this.extraForm = this.fb.group({
             notes: ["", Validators.maxLength(200)],
         });
 
@@ -131,84 +143,101 @@ export class LogDrinkPage implements OnInit {
         const pubIDParam = this.route.snapshot.queryParamMap.get("pubID");
         if (pubIDParam) {
             this.pubIDFromRoute = parseInt(pubIDParam, 10);
-            this.goDetails();
+            this.transitionToPubDetails();
         }
     }
 
-    public get filteredPubs(): Pub[] {
-        const venue = this.detailsForm.get("venue")!.value ?? "";
+    private updateFilteredPubs(): void {
+        const venue = this.pubForm.get("venue")!.value ?? "";
         if (!venue) {
-            return this.selectedPubs;
+            this.filteredPubs = this.selectedPubs;
+            return;
         }
         const lower = venue.toLowerCase();
-        return this.selectedPubs.filter((s) => {
-            return s.name.toLowerCase().includes(lower);
-        });
+        this.filteredPubs = this.selectedPubs.filter((s) =>
+            s.name.toLowerCase().includes(lower),
+        );
     }
 
-    public onPubSelected(pub: Pub): void {
-        this.selectedPubID = pub.camraID;
-        this.detailsForm.patchValue({venue: pub.name});
+    public onPubSelected(pub: Pub | string): void {
+        if (typeof pub === "object") {
+            this.selectedPubID = pub.camraID;
+            this.pubForm.patchValue({venue: pub.name});
+        } else {
+            this.selectedPubID = null;
+        }
     }
 
     public onBeerSelected(beer: Beer): void {
-        this.detailsForm.patchValue({
+        this.drinkForm.patchValue({
             name: beer.name,
             brewery: beer.brewery,
             untappdID: beer.untappd,
+            abv: beer.abv,
         });
     }
 
     public onNameChange(): void {
-        this.detailsForm.patchValue({brewery: "", untappdID: null});
+        this.drinkForm.patchValue({brewery: "", untappdID: null, abv: null});
     }
 
-    public cid = "";
-
     public logDrink(): void {
-        if (this.selectedPubID === null) {
-            this.errorStr = "Please select a valid pub from the list";
-            this.pageState = PageState.Error;
-            return;
-        }
-        const v = this.detailsForm.value;
+        const p = this.pubForm.value;
+        const d = this.drinkForm.value;
+        const e = this.extraForm.value;
+
         const drink: NewDrink = {
-            pubID: this.selectedPubID,
-            name: v.name,
-            brewery: v.brewery,
-            untappdID: v.untappdID || undefined,
-            with: v.drunkWith,
             timestamp: this.getDrinkTimestamp(),
-            endOfWord: v.endOfWord,
-            notInWord: v.notInWord,
-            notes: v.notes || undefined,
+            pubName: p.venue,
+            camraID: this.selectedPubID || undefined,
+            drinkName: d.name,
+            brewery: d.brewery,
+            abv: d.abv,
+            untappdID: d.untappdID || undefined,
+            with: p.drunkWith,
+            notes: e.notes || undefined,
         };
-        this.cid = "";
-        this.pageState = PageState.Saving;
+
+        this.pageState.set(PageState.Saving);
         this.drinkSvc
             .logDrink(drink)
-            .then((ld) => {
-                this.pageState = PageState.Saved;
-                this.cid = ld.cid;
-                this.cdr.markForCheck();
+            .then(() => {
+                this.pageState.set(PageState.Saved);
             })
             .catch((e) => {
                 this.errorStr = e;
-                this.pageState = PageState.Error;
-                this.cdr.markForCheck();
+                this.pageState.set(PageState.Error);
             });
     }
 
-    public goDetails(): void {
-        this.pageState = PageState.Loading;
+    public transitionToDrinkDetails(): void {
+        if (this.allBeers.length) {
+            this.pageState.set(PageState.DrinkDetails);
+            return;
+        }
 
-        const loadBeers = this.beersSvc.loadAll();
-        const loadPubs = this.pubsSvc.getPubs();
+        this.pageState.set(PageState.LoadingDrinks);
 
-        Promise.all([loadBeers, loadPubs])
-            .then(([beers, pubs]: [Beer[], Pub[]]) => {
+        this.beersSvc
+            .loadAll()
+            .then((beers) => {
                 this.allBeers = beers;
+                this.pageState.set(PageState.DrinkDetails);
+            })
+            .catch(() => {
+                this.errorStr = "Failed to load drink details";
+                this.pageState.set(PageState.Error);
+            });
+    }
+
+    public transitionToPubDetails(): void {
+        this.pageState.set(PageState.LoadingPubs);
+
+        this.pubsSvc
+            .getPubs()
+            .then((pubs) => {
                 this.selectedPubs = pubs;
+                this.updateFilteredPubs();
 
                 if (this.pubIDFromRoute !== null) {
                     const match = this.selectedPubs.find(
@@ -220,25 +249,28 @@ export class LogDrinkPage implements OnInit {
                     this.pubIDFromRoute = null;
                 }
 
-                this.pageState = PageState.Details;
-                this.cdr.markForCheck();
+                this.pageState.set(PageState.PubDetails);
             })
             .catch(() => {
                 this.errorStr = "Failed to load pub selections";
-                this.pageState = PageState.Error;
-                this.cdr.markForCheck();
+                this.pageState.set(PageState.Error);
             });
     }
 
-    private getSelectionTimestamp(): string | undefined {
-        if (this.whenForm.get("selectWhen")!.value === "now") {
-            return undefined;
-        }
-        return this.getDrinkTimestamp();
+    public transitionToExtraDetails(): void {
+        this.pageState.set(PageState.ExtraDetails);
     }
 
-    public goBack(): void {
-        this.pageState = PageState.Ready;
+    public goBackWhen(): void {
+        this.pageState.set(PageState.When);
+    }
+
+    public goBackPub(): void {
+        this.pageState.set(PageState.PubDetails);
+    }
+
+    public goBackDrink(): void {
+        this.pageState.set(PageState.DrinkDetails);
     }
 
     public goAgain(): void {
@@ -248,19 +280,24 @@ export class LogDrinkPage implements OnInit {
             day_select: initialDaySelect,
             time: "",
         });
-        this.detailsForm.reset({
+        this.pubForm.reset({
             venue: "",
+            drunkWith: "",
+        });
+        this.drinkForm.reset({
             name: "",
             brewery: "",
             untappdID: null,
-            drunkWith: "",
-            endOfWord: false,
-            notInWord: false,
+            abv: null,
+        });
+        this.extraForm.reset({
             notes: "",
         });
         this.selectedPubID = null;
+        this.selectedPubs = [];
+        this.filteredPubs = [];
         this.errorStr = "";
-        this.pageState = PageState.Ready;
+        this.pageState.set(PageState.When);
     }
 
     private getDrinkTimestamp(): string | undefined {
@@ -288,9 +325,12 @@ export class LogDrinkPage implements OnInit {
 }
 
 enum PageState {
-    Ready = "Ready",
-    Loading = "Loading",
-    Details = "Details",
+    When = "When",
+    LoadingPubs = "LoadingPubs",
+    PubDetails = "PubDetails",
+    LoadingDrinks = "LoadingDrinks",
+    DrinkDetails = "DrinkDetails",
+    ExtraDetails = "ExtraDetails",
     Saving = "Saving",
     Error = "Error",
     Saved = "Saved",
