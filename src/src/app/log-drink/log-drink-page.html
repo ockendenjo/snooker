@@ -116,13 +116,6 @@
             </div>
 
             <div>
-                <div class="subtitle-small">Rate this pub</div>
-                <app-rating-control
-                    formControlName="pubRating"
-                ></app-rating-control>
-            </div>
-
-            <div>
                 <mat-form-field class="full-width">
                     <mat-label>Who were you drinking with?</mat-label>
                     <input
@@ -203,6 +196,7 @@
     @if (pageState() == "ExtraDetails" || debugUI) {
         <form [formGroup]="extraForm" (ngSubmit)="logDrink()">
             <div>
+                <h3>Optional: Extra notes</h3>
                 <mat-form-field>
                     <mat-label
                         >Any extra notes? (optional, viewable by
@@ -214,6 +208,27 @@
                         id="notes"
                         [maxLength]="200"
                     ></textarea>
+                </mat-form-field>
+            </div>
+
+            <div>
+                <h3>Optional: Rate the pub</h3>
+                <app-rating-control
+                    formControlName="pubRating"
+                ></app-rating-control>
+            </div>
+
+            <div>
+                <h3>Optional: Beer price</h3>
+                <p>How much did the beer cost (per pint)?</p>
+                <mat-form-field>
+                    <mat-label>Pint cost</mat-label>
+                    <input
+                        matInput
+                        type="number"
+                        step="0.05"
+                        formControlName="price"
+                    />
                 </mat-form-field>
             </div>
 

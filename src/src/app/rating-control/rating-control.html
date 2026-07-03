@@ -3,7 +3,6 @@
     @for (r of ratings; track r) {
         <button
             type="button"
-            class="rating-btn"
             [ngClass]="'b' + r"
             [class.selected]="value === r"
             [disabled]="isDisabled"

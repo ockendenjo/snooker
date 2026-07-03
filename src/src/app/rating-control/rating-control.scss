@@ -1,16 +1,9 @@
-.rating-btn {
+.rating {
+    align-items: center;
+}
+
+.rating > button {
     border-radius: 0;
-
-    &:hover:not(:disabled) {
-        opacity: 0.75;
-    }
-
-    &.selected {
-        border-top: 2px solid black;
-        border-bottom: 2px solid black;
-        opacity: 1 !important;
-        font-weight: bold;
-    }
 
     &:disabled {
         opacity: 0.5;
@@ -63,24 +56,32 @@
         margin-right: 8px;
     }
 
-    & > div {
-        width: 40px;
-        height: 32px;
+    & > button {
         text-align: center;
-        line-height: 32px;
         opacity: 0.6;
         border-top: 2px solid white;
         border-bottom: 2px solid white;
+
+        &:hover {
+            opacity: 0.9;
+        }
+
+        &.selected {
+            border-top: 2px solid black;
+            border-bottom: 2px solid black;
+            opacity: 1 !important;
+            font-weight: bold;
+        }
     }
 }
 
 :host-context(.dark) {
-    .rating > div {
+    .rating > button {
         border-top: 2px solid black;
         border-bottom: 2px solid black;
     }
 
-    .rating > div.selected {
+    .rating > button.selected {
         border-top: 2px solid white;
         border-bottom: 2px solid white;
     }

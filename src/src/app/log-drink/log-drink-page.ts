@@ -98,7 +98,6 @@ export class LogDrinkPage implements OnInit {
         this.pubForm = this.fb.group({
             venue: ["", Validators.required],
             drunkWith: ["", [Validators.required, Validators.maxLength(100)]],
-            pubRating: [null as number | null],
         });
 
         this.pubForm.get("venue")!.valueChanges.subscribe(() => {
@@ -107,6 +106,8 @@ export class LogDrinkPage implements OnInit {
 
         this.extraForm = this.fb.group({
             notes: ["", Validators.maxLength(200)],
+            pubRating: [null as number | null],
+            price: [null as number | null, Validators.min(0)],
         });
 
         this.whenForm.get("selectWhen")!.valueChanges.subscribe((val) => {
@@ -295,6 +296,8 @@ export class LogDrinkPage implements OnInit {
         });
         this.extraForm.reset({
             notes: "",
+            pubRating: null,
+            price: null,
         });
         this.selectedPubID = null;
         this.selectedPubs = [];
