@@ -108,6 +108,7 @@ export class LogDrinkPage implements OnInit {
             notes: ["", Validators.maxLength(200)],
             pubRating: [null as number | null],
             price: [null as number | null, Validators.min(0)],
+            realAles: [null as number | null, Validators.min(0)],
         });
 
         this.whenForm.get("selectWhen")!.valueChanges.subscribe((val) => {
@@ -298,6 +299,7 @@ export class LogDrinkPage implements OnInit {
             notes: "",
             pubRating: null,
             price: null,
+            realAles: null,
         });
         this.selectedPubID = null;
         this.selectedPubs = [];
