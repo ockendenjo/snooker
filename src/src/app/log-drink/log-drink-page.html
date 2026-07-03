@@ -1,8 +1,8 @@
 <div class="center content">
     <h1>Log a drink</h1>
 
-    @if (pageState == "Ready" || pageState == "Error" || debugUI) {
-        @if (pageState == "Error" || debugUI) {
+    @if (pageState() == "When" || pageState() == "Error" || debugUI) {
+        @if (pageState() == "Error" || debugUI) {
             <p class="error">{{ errorStr }}</p>
         }
         @if (tooEarly || debugUI) {
@@ -14,7 +14,7 @@
         @if (!tooEarly && !tooLate) {
             <div class="subtitle">When did you drink?</div>
 
-            <form [formGroup]="whenForm" (ngSubmit)="goDetails()">
+            <form [formGroup]="whenForm" (ngSubmit)="transitionToPubDetails()">
                 <p>All drinks must be submitted within 24 hours.</p>
 
                 <div class="radios">
@@ -72,11 +72,11 @@
             </form>
         }
     }
-    @if (pageState == "Loading" || debugUI) {
+    @if (pageState() == "LoadingPubs" || debugUI) {
         <p>Loading pub selections...</p>
     }
-    @if (pageState == "Details" || debugUI) {
-        <form [formGroup]="detailsForm" (ngSubmit)="logDrink()">
+    @if (pageState() == "PubDetails" || debugUI) {
+        <form [formGroup]="pubForm" (ngSubmit)="transitionToDrinkDetails()">
             <div>
                 <mat-form-field class="full-width">
                     <mat-label>Pub/Venue name</mat-label>
@@ -85,13 +85,23 @@
                         #auto="matAutocomplete"
                         (optionSelected)="onPubSelected($event.option.value)"
                     >
-                        @for (option of filteredPubs; track option.goodBeerID) {
+                        @for (option of filteredPubs; track option.camraID) {
                             <mat-option [value]="option">
-                                <div class="pub-row">
-                                    {{ option.name }}
+                                <div class="col">
+                                    <div class="pub-row">
+                                        {{ option.name }}
+                                    </div>
+                                    <div class="pub-addr">
+                                        {{ option.address }}
+                                    </div>
                                 </div>
                             </mat-option>
                         }
+                        <mat-option [value]="pubForm.get('venue')?.value">
+                            <div class="pub-row">
+                                <i>{{ pubForm.get("venue")?.value }}</i>
+                            </div>
+                        </mat-option>
                     </mat-autocomplete>
 
                     <input
@@ -106,19 +116,7 @@
             </div>
 
             <div>
-                <app-drink-autocomplete
-                    [allBeers]="allBeers"
-                    [control]="$any(detailsForm.get('name'))"
-                    (beerSelected)="onBeerSelected($event)"
-                    (inputChanged)="onNameChange()"
-                ></app-drink-autocomplete>
-            </div>
-
-            <div>
-                <mat-form-field class="full-width">
-                    <mat-label>Brewery name</mat-label>
-                    <input matInput formControlName="brewery" type="text" />
-                </mat-form-field>
+                <p>Rate pub widget to go here</p>
             </div>
 
             <div>
@@ -134,18 +132,73 @@
                 </mat-form-field>
             </div>
 
-            <div>
-                <mat-checkbox formControlName="endOfWord"
-                    >This letter ends a word</mat-checkbox
+            <div class="row">
+                <button mat-button type="button" (click)="goBackWhen()">
+                    Back
+                </button>
+
+                <button
+                    class="submit"
+                    mat-button
+                    type="submit"
+                    [disabled]="pubForm.invalid"
                 >
+                    Next
+                </button>
+            </div>
+        </form>
+    }
+    @if (pageState() == "LoadingDrinks" || debugUI) {
+        <p>Loading drinks...</p>
+    }
+    @if (pageState() == "DrinkDetails" || debugUI) {
+        <form [formGroup]="drinkForm" (ngSubmit)="transitionToExtraDetails()">
+            <div>
+                <app-drink-autocomplete
+                    [allBeers]="allBeers"
+                    [control]="$any(drinkForm.get('name'))"
+                    (beerSelected)="onBeerSelected($event)"
+                    (inputChanged)="onNameChange()"
+                ></app-drink-autocomplete>
             </div>
 
             <div>
-                <mat-checkbox formControlName="notInWord"
-                    >Extra letter (not in word)</mat-checkbox
-                >
+                <mat-form-field class="full-width">
+                    <mat-label>Brewery name</mat-label>
+                    <input matInput formControlName="brewery" type="text" />
+                </mat-form-field>
             </div>
 
+            <div>
+                <mat-form-field>
+                    <mat-label>ABV</mat-label>
+                    <input
+                        matInput
+                        formControlName="abv"
+                        type="number"
+                        step="0.1"
+                    />
+                </mat-form-field>
+            </div>
+
+            <div class="row">
+                <button mat-button type="button" (click)="goBackPub()">
+                    Back
+                </button>
+
+                <button
+                    class="submit"
+                    mat-button
+                    type="submit"
+                    [disabled]="drinkForm.invalid"
+                >
+                    Next
+                </button>
+            </div>
+        </form>
+    }
+    @if (pageState() == "ExtraDetails" || debugUI) {
+        <form [formGroup]="extraForm" (ngSubmit)="logDrink()">
             <div>
                 <mat-form-field>
                     <mat-label
@@ -161,26 +214,24 @@
                 </mat-form-field>
             </div>
 
-            <div class="row">
-                <button mat-button type="button" (click)="goBack()">
-                    BACK
-                </button>
+            <button mat-button type="button" (click)="goBackDrink()">
+                Back
+            </button>
 
-                <button
-                    class="submit"
-                    mat-button
-                    type="submit"
-                    [disabled]="detailsForm.invalid"
-                >
-                    SUBMIT
-                </button>
-            </div>
+            <button
+                class="submit"
+                mat-button
+                type="submit"
+                [disabled]="extraForm.invalid"
+            >
+                Submit
+            </button>
         </form>
     }
-    @if (pageState == "Saving" || debugUI) {
+    @if (pageState() == "Saving" || debugUI) {
         <p>Logging drink...</p>
     }
-    @if (pageState == "Saved" || debugUI) {
+    @if (pageState() == "Saved" || debugUI) {
         <p>Drink logged successfully</p>
 
         <p>

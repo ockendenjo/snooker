@@ -64,13 +64,11 @@ export class DrinkService {
 
 export type NewDrink = {
     timestamp?: string;
-    pubID: number;
+    pubID?: number;
     name: string;
     brewery: string;
     untappdID?: number;
     with: string;
-    endOfWord: boolean;
-    notInWord: boolean;
     notes?: string;
 };
 
