@@ -9,10 +9,6 @@
         @for (beer of filteredBeers; track beer.untappd) {
             <mat-option [value]="beer" class="beer">
                 <div class="beer-row">
-                    <div
-                        class="beer-col-left"
-                        [ngClass]="getColour(beer)"
-                    ></div>
                     <div class="beer-img">
                         <app-beer-image
                             [beer]="beer"
@@ -20,7 +16,7 @@
                         ></app-beer-image>
                     </div>
                     <div class="beer-text">
-                        <div>{{ beer.name }}</div>
+                        <div class="beer-name">{{ beer.name }}</div>
                         <div class="details">
                             {{ beer.brewery }}
                             @if (beer.abv) {
@@ -31,10 +27,9 @@
                             }
                         </div>
                     </div>
-                    <div
-                        class="beer-col-right"
-                        [ngClass]="getColour(beer)"
-                    ></div>
+                    <div class="beer-colour" [ngClass]="getColour(beer)">
+                        {{ getPoints(beer) }}
+                    </div>
                 </div>
             </mat-option>
         }

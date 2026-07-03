@@ -11,7 +11,7 @@
 }
 
 mat-option.beer {
-    padding: 0;
+    padding: 0 8px;
 }
 
 ::ng-deep mat-option.beer .mdc-list-item__primary-text {
@@ -38,23 +38,29 @@ mat-option.beer {
 
 .beer-text {
     flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
-$radius: 10px;
-
-.beer-col-left {
-    width: $radius;
-    height: 2 * $radius;
-    border-top-right-radius: $radius;
-    border-bottom-right-radius: $radius;
-    margin-right: 8px;
+.beer-name,
+.details {
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
-.beer-col-right {
-    width: $radius;
-    height: 2 * $radius;
-    border-top-left-radius: $radius;
-    border-bottom-left-radius: $radius;
+$radius: 12px;
+
+.beer-colour {
+    width: 2 * $radius !important;
+    height: 2 * $radius !important;
+    border-radius: $radius;
+    flex-shrink: 0;
+    margin-left: 8px;
+    text-align: center;
+    font-size: $radius;
+    line-height: 2 * $radius;
+    color: white;
+    font-weight: bold;
 }
 
 .red {
