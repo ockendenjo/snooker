@@ -175,8 +175,6 @@ export class LogDrinkPage implements OnInit {
         this.drinkForm.patchValue({brewery: "", untappdID: null, abv: null});
     }
 
-    public cid = "";
-
     public logDrink(): void {
         const p = this.pubForm.value;
         const d = this.drinkForm.value;
@@ -193,12 +191,11 @@ export class LogDrinkPage implements OnInit {
             with: p.drunkWith,
             notes: e.notes || undefined,
         };
-        this.cid = "";
+
         this.pageState.set(PageState.Saving);
         this.drinkSvc
             .logDrink(drink)
-            .then((ld) => {
-                this.cid = ld.cid;
+            .then(() => {
                 this.pageState.set(PageState.Saved);
             })
             .catch((e) => {
