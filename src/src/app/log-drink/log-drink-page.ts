@@ -178,15 +178,20 @@ export class LogDrinkPage implements OnInit {
     public cid = "";
 
     public logDrink(): void {
-        const v = this.pubForm.value;
+        const p = this.pubForm.value;
+        const d = this.drinkForm.value;
+        const e = this.extraForm.value;
+
         const drink: NewDrink = {
-            pubID: this.selectedPubID || undefined,
-            name: v.name,
-            brewery: v.brewery,
-            untappdID: v.untappdID || undefined,
-            with: v.drunkWith,
             timestamp: this.getDrinkTimestamp(),
-            notes: v.notes || undefined,
+            pubName: p.venue,
+            camraID: this.selectedPubID || undefined,
+            drinkName: d.name,
+            brewery: d.brewery,
+            abv: d.abv,
+            untappdID: d.untappdID || undefined,
+            with: p.drunkWith,
+            notes: e.notes || undefined,
         };
         this.cid = "";
         this.pageState.set(PageState.Saving);
