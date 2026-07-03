@@ -1,0 +1,16 @@
+<div class="rating">
+    <div>Poor</div>
+    @for (r of ratings; track r) {
+        <button
+            type="button"
+            class="rating-btn"
+            [ngClass]="'b' + r"
+            [class.selected]="value === r"
+            [disabled]="isDisabled"
+            (click)="select(r)"
+        >
+            {{ r }}
+        </button>
+    }
+    <div>Excellent</div>
+</div>
