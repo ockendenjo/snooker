@@ -21,6 +21,7 @@ import {Beer, BeersService} from "../services/beers.service";
 import {RangeService} from "../services/range.service";
 import {environment} from "../../environments/environment.dev";
 import {DrinkAutocompleteComponent} from "../drink-autocomplete/drink-autocomplete.component";
+import {RatingControl} from "../rating-control/rating-control";
 
 @Component({
     selector: "app-log-drink-page",
@@ -37,6 +38,7 @@ import {DrinkAutocompleteComponent} from "../drink-autocomplete/drink-autocomple
         MatAutocompleteModule,
         MatCheckboxModule,
         DrinkAutocompleteComponent,
+        RatingControl,
     ],
     templateUrl: "./log-drink-page.html",
     styleUrl: "./log-drink-page.scss",
@@ -104,6 +106,9 @@ export class LogDrinkPage implements OnInit {
 
         this.extraForm = this.fb.group({
             notes: ["", Validators.maxLength(200)],
+            pubRating: [null as number | null],
+            price: [null as number | null, Validators.min(0)],
+            realAles: [null as number | null, Validators.min(0)],
         });
 
         this.whenForm.get("selectWhen")!.valueChanges.subscribe((val) => {
@@ -292,6 +297,9 @@ export class LogDrinkPage implements OnInit {
         });
         this.extraForm.reset({
             notes: "",
+            pubRating: null,
+            price: null,
+            realAles: null,
         });
         this.selectedPubID = null;
         this.selectedPubs = [];
