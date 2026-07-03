@@ -60,6 +60,7 @@ export class LogDrinkPage implements OnInit {
 
     private selectedPubID: number | null = null;
     private selectedPubs: Pub[] = [];
+    public filteredPubs: Pub[] = [];
     public allBeers: Beer[] = [];
 
     constructor(
@@ -89,12 +90,16 @@ export class LogDrinkPage implements OnInit {
             name: ["", Validators.required],
             brewery: ["", Validators.required],
             untappdID: [null as number | null],
-            abv: [{value: null as number | null}, Validators.required],
+            abv: [null as number | null, Validators.required],
         });
 
         this.pubForm = this.fb.group({
             venue: ["", Validators.required],
             drunkWith: ["", [Validators.required, Validators.maxLength(100)]],
+        });
+
+        this.pubForm.get("venue")!.valueChanges.subscribe(() => {
+            this.updateFilteredPubs();
         });
 
         this.extraForm = this.fb.group({
@@ -142,15 +147,16 @@ export class LogDrinkPage implements OnInit {
         }
     }
 
-    public get filteredPubs(): Pub[] {
+    private updateFilteredPubs(): void {
         const venue = this.pubForm.get("venue")!.value ?? "";
         if (!venue) {
-            return this.selectedPubs;
+            this.filteredPubs = this.selectedPubs;
+            return;
         }
         const lower = venue.toLowerCase();
-        return this.selectedPubs.filter((s) => {
-            return s.name.toLowerCase().includes(lower);
-        });
+        this.filteredPubs = this.selectedPubs.filter((s) =>
+            s.name.toLowerCase().includes(lower),
+        );
     }
 
     public onPubSelected(pub: Pub | string): void {
@@ -231,6 +237,7 @@ export class LogDrinkPage implements OnInit {
             .getPubs()
             .then((pubs) => {
                 this.selectedPubs = pubs;
+                this.updateFilteredPubs();
 
                 if (this.pubIDFromRoute !== null) {
                     const match = this.selectedPubs.find(
@@ -287,6 +294,8 @@ export class LogDrinkPage implements OnInit {
             notes: "",
         });
         this.selectedPubID = null;
+        this.selectedPubs = [];
+        this.filteredPubs = [];
         this.errorStr = "";
         this.pageState.set(PageState.When);
     }
