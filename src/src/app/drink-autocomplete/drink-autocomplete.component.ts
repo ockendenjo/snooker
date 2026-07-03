@@ -64,4 +64,26 @@ export class DrinkAutocompleteComponent {
         }
         return "red";
     }
+
+    public getPoints(b: Beer): string {
+        if (b.abv >= 5.4) {
+            return "7";
+        }
+        if (b.abv >= 5.1) {
+            return "6";
+        }
+        if (b.abv >= 4.8) {
+            return "5";
+        }
+        if (b.abv >= 4.5) {
+            return "4";
+        }
+        if (b.abv >= 4.2) {
+            return "3";
+        }
+        if (b.abv >= 3.9) {
+            return "2";
+        }
+        return "1";
+    }
 }
