@@ -13,9 +13,8 @@ type Drink struct {
 	PubName     string     `dynamodbav:"pub_name"               json:"pubName"`
 	DrinkName   string     `dynamodbav:"drink_name"             json:"drinkName"`
 	Brewery     string     `dynamodbav:"brewery"                json:"brewery"`
-	ABV         *float32   `dynamodbav:"abv"                    json:"abv"`
+	ABV         int        `dynamodbav:"abv"                    json:"abv"`
 	UntappdID   *int       `dynamodbav:"untappd_id,omitempty"   json:"untappdID"`
-	Points      int        `dynamodbav:"points"                 json:"points"`
 	With        string     `dynamodbav:"with"                   json:"with"`
 	Version     int        `dynamodbav:"version"                json:"version"`
 	Notes       *string    `dynamodbav:"notes,omitempty"        json:"notes,omitempty"`
@@ -60,10 +59,7 @@ func (d *Drink) Validate() error {
 	if len(d.Brewery) > MaxLengthBrewery {
 		return fmt.Errorf("brewery must not exceed %d characters", MaxLengthBrewery)
 	}
-	if d.ABV == nil {
-		return errors.New("abv is required")
-	}
-	if *d.ABV < MinABV || *d.ABV > MaxABV {
+	if d.ABV < MinABV || d.ABV > MaxABV {
 		return errors.New("abv outside allowable range")
 	}
 
