@@ -26,11 +26,9 @@ func Test_client(t *testing.T) {
 	newDrink := Drink{
 		UserID:    userID,
 		Timestamp: &timestamp,
-		PubID:     1,
-		Name:      "Test Drink",
+		CamraID:   new(1),
+		DrinkName: "Test Drink",
 		Points:    10,
-		EndOfWord: true,
-		NotInWord: false,
 		With:      "Friend",
 		Version:   0,
 	}
@@ -42,11 +40,9 @@ func Test_client(t *testing.T) {
 	newDrink2 := Drink{
 		UserID:    userID,
 		Timestamp: &timestamp2,
-		PubID:     2,
-		Name:      "Another Drink",
+		CamraID:   new(2),
+		DrinkName: "Another Drink",
 		Points:    15,
-		EndOfWord: false,
-		NotInWord: true,
 		With:      "Colleague",
 		Version:   0,
 	}
@@ -62,8 +58,8 @@ func Test_client(t *testing.T) {
 	// Verify drinks are in ascending order by timestamp (oldest first)
 	assert.Equal(t, timestamp.Truncate(time.Second).UTC(), drinks[0].Timestamp.UTC())
 	assert.Equal(t, timestamp2.Truncate(time.Second).UTC(), drinks[1].Timestamp.UTC())
-	assert.Equal(t, "Test Drink", drinks[0].Name)
-	assert.Equal(t, "Another Drink", drinks[1].Name)
+	assert.Equal(t, "Test Drink", drinks[0].DrinkName)
+	assert.Equal(t, "Another Drink", drinks[1].DrinkName)
 	assert.Equal(t, 10, drinks[0].Points)
 	assert.Equal(t, 15, drinks[1].Points)
 }
