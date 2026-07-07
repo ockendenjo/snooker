@@ -93,6 +93,7 @@ export class LogDrinkPage implements OnInit {
             brewery: ["", Validators.required],
             untappdID: [null as number | null],
             abv: [null as number | null, Validators.required],
+            isFoul: [false],
         });
 
         this.pubForm = this.fb.group({
@@ -158,6 +159,9 @@ export class LogDrinkPage implements OnInit {
             this.filteredPubs = this.selectedPubs;
             return;
         }
+        if (typeof venue === "object") {
+            return;
+        }
         const lower = venue.toLowerCase();
         this.filteredPubs = this.selectedPubs.filter((s) =>
             s.name.toLowerCase().includes(lower),
@@ -198,6 +202,7 @@ export class LogDrinkPage implements OnInit {
             drinkName: d.name,
             brewery: d.brewery,
             abv: d.abv,
+            isFoul: d.isFoul,
             untappdID: d.untappdID || undefined,
             with: p.drunkWith,
             notes: e.notes || undefined,

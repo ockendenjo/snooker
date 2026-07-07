@@ -69,6 +69,7 @@ export type NewDrink = {
     drinkName: string;
     brewery: string;
     abv: number;
+    isFoul: boolean;
     untappdID?: number;
     with: string;
     notes?: string;
