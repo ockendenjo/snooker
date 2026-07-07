@@ -29,6 +29,13 @@ variable "cognito" {
   })
 }
 
+variable "duration" {
+  type = object({
+    start_date = string
+    end_date   = string
+  })
+}
+
 variable "env" {
   description = "Environment name (dev or pro)"
   type        = string

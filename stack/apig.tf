@@ -19,6 +19,7 @@ resource "aws_api_gateway_deployment" "main" {
 
       module.apig_delete_account,
       module.apig_get_session_data,
+      module.apig_log_drink,
       module.apig_set_displayname,
     ]))
   }
