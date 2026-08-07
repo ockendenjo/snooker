@@ -28,7 +28,7 @@ func Test_client(t *testing.T) {
 		Timestamp: &timestamp,
 		CamraID:   new(1),
 		DrinkName: "Test Drink",
-		Points:    10,
+		ABV:       38,
 		With:      "Friend",
 		Version:   0,
 	}
@@ -42,7 +42,7 @@ func Test_client(t *testing.T) {
 		Timestamp: &timestamp2,
 		CamraID:   new(2),
 		DrinkName: "Another Drink",
-		Points:    15,
+		ABV:       45,
 		With:      "Colleague",
 		Version:   0,
 	}
@@ -60,8 +60,8 @@ func Test_client(t *testing.T) {
 	assert.Equal(t, timestamp2.Truncate(time.Second).UTC(), drinks[1].Timestamp.UTC())
 	assert.Equal(t, "Test Drink", drinks[0].DrinkName)
 	assert.Equal(t, "Another Drink", drinks[1].DrinkName)
-	assert.Equal(t, 10, drinks[0].Points)
-	assert.Equal(t, 15, drinks[1].Points)
+	assert.Equal(t, 38, drinks[0].ABV)
+	assert.Equal(t, 45, drinks[1].ABV)
 }
 
 func setupTableAndGetClient(t *testing.T) (Client, func()) {
