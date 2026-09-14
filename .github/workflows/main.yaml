@@ -15,11 +15,11 @@ permissions:
 jobs:
   test-go:
     name: Go
-    uses: ./.github/workflows/go-test.yaml
+    uses: $/.github/workflows/go-test.yaml
 
   cmd:
     name: Go
-    uses: ./.github/workflows/cmd.yaml
+    uses: $/.github/workflows/cmd.yaml
     permissions:
       id-token: write # OIDC authentication with AWS
       contents: read
@@ -32,7 +32,7 @@ jobs:
 
   validate:
     name: Validate
-    uses: ./.github/workflows/validate.yaml
+    uses: $/.github/workflows/validate.yaml
 
   tf-dev:
     name: tf-dev
@@ -42,7 +42,7 @@ jobs:
     permissions:
       id-token: write # OIDC authentication with AWS
       contents: read
-    uses: ./.github/workflows/tf-apply.yaml
+    uses: $/.github/workflows/tf-apply.yaml
     with:
       environment: dev
     secrets:
@@ -55,7 +55,7 @@ jobs:
     permissions:
       id-token: write # OIDC authentication with AWS
       contents: read
-    uses: ./.github/workflows/ui.yaml
+    uses: $/.github/workflows/ui.yaml
     with:
       environment: dev
       upload_ui: true
