@@ -105,7 +105,7 @@ type endOfWordDrink = baseDrink & {
     wordPoints: number;
 };
 
-export type DrinksFile = {
+type DrinksFile = {
     drinks: Drink[];
 };
 

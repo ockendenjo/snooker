@@ -22,7 +22,7 @@ export class PubsService {
     }
 }
 
-export interface PubsFile {
+interface PubsFile {
     pubs: Pub[];
 }
 
