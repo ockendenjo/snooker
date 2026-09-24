@@ -38,15 +38,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: '24.x'
+          node-version-file: src/.nvmrc
 
       - name: Install Node modules
         working-directory: src
-        run: npm install
-
-      - name: Check formatting
-        working-directory: src
-        run: npx prettier --check .
+        run: npm ci
 
       - name: Check linting
         working-directory: src

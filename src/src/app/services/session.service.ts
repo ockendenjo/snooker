@@ -131,11 +131,11 @@ export type SessionData = {
 
 export type AuthData = NoAuthAuthData | SignedInAuthData;
 
-export type NoAuthAuthData = {
+type NoAuthAuthData = {
     state: AuthState.Unknown | AuthState.NoAuth;
 };
 
-export type SignedInAuthData = {
+type SignedInAuthData = {
     state: AuthState.SignedIn;
     sessionData: SessionData;
 };

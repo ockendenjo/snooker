@@ -1,15 +1,15 @@
 export type PageState<T> = StateLoading | StateLoaded<T> | StateError;
 
-export interface StateLoading {
+interface StateLoading {
     state: "LOADING";
 }
 
-export interface StateLoaded<T> {
+interface StateLoaded<T> {
     state: "LOADED";
     data: T;
 }
 
-export interface StateError {
+interface StateError {
     state: "ERROR";
     error: Error;
 }
