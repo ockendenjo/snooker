@@ -5,12 +5,12 @@ import (
 	"os"
 	"testing"
 	"time"
+	"uuid"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	dynamoTypes "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"github.com/google/uuid"
 	"github.com/ockendenjo/snooker/pkg/testing/testdb"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -82,7 +82,7 @@ func setupTableAndGetClient(t *testing.T) (Client, func()) {
 		o.BaseEndpoint = new("http://localhost:8000")
 	})
 
-	tableName := fmt.Sprintf("test-drinks-%s", uuid.NewString())
+	tableName := fmt.Sprintf("test-drinks-%s", uuid.NewV7().String())
 
 	drinksClient := NewClient(dynamoClient, tableName)
 
