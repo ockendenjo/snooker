@@ -12,13 +12,11 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.69.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.113.1
 	github.com/aws/aws-sdk-go-v2/service/sns v1.47.0
-	github.com/google/uuid v1.6.0
 	github.com/ockendenjo/handler v1.0.8
 	github.com/stretchr/testify v1.12.1
 )
 
 require (
-	github.com/andybalholm/brotli v1.2.4 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.7.20 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.20.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.5.3 // indirect

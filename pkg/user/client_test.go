@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"uuid"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	dynamoTypes "github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"github.com/google/uuid"
 	"github.com/ockendenjo/snooker/pkg/testing/testdb"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -23,7 +23,7 @@ func Test_client(t *testing.T) {
 
 	newUser := User{
 		Email: email,
-		ID:    uuid.NewString(),
+		ID:    uuid.NewV7().String(),
 	}
 	err := c.InsertUser(t.Context(), newUser)
 	require.NoError(t, err)
@@ -62,12 +62,12 @@ func Test_ScanUsers(t *testing.T) {
 	defer deleteFn()
 
 	// Insert user with points
-	userWithPoints := User{Email: "points@example.com", ID: uuid.NewString(), TotalPoints: 50}
+	userWithPoints := User{Email: "points@example.com", ID: uuid.NewV7().String(), TotalPoints: 50}
 	err := c.InsertUser(t.Context(), userWithPoints)
 	require.NoError(t, err)
 
 	// Insert user without points — should be excluded from scan results
-	userNoPoints := User{Email: "nopoints@example.com", ID: uuid.NewString(), TotalPoints: 0}
+	userNoPoints := User{Email: "nopoints@example.com", ID: uuid.NewV7().String(), TotalPoints: 0}
 	err = c.InsertUser(t.Context(), userNoPoints)
 	require.NoError(t, err)
 
@@ -96,7 +96,7 @@ func setupTableAndGetClient(t *testing.T) (Client, func()) {
 		o.BaseEndpoint = new("http://localhost:8000")
 	})
 
-	tableName := fmt.Sprintf("test-mpan-%s", uuid.NewString())
+	tableName := fmt.Sprintf("test-mpan-%s", uuid.NewV7().String())
 
 	lbClient := NewClient(dynamoClient, tableName)
 
