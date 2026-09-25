@@ -82,7 +82,7 @@ func setupTableAndGetClient(t *testing.T) (Client, func()) {
 		o.BaseEndpoint = new("http://localhost:8000")
 	})
 
-	tableName := fmt.Sprintf("test-drinks-%s", uuid.NewV7().String())
+	tableName := fmt.Sprintf("test-drinks-%s", uuid.NewV4().String())
 
 	drinksClient := NewClient(dynamoClient, tableName)
 

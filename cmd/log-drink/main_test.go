@@ -10,7 +10,7 @@ import (
 )
 
 func Test_getResponseSK(t *testing.T) {
-	userID := uuid.NewV7().String()
+	userID := uuid.NewV4().String()
 	tm := new(time.Now())
 
 	sk, err := getCompositeID(userID, tm)
