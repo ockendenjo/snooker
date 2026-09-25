@@ -42,7 +42,7 @@ func (h *lambdaHandler) handle(ctx *handler.Context, event events.APIGatewayProx
 	}
 
 	if userObj == nil {
-		newUser := user.User{Email: email, ID: uuid.NewV7().String(), Version: 0}
+		newUser := user.User{Email: email, ID: uuid.NewV4().String(), Version: 0}
 		if err := h.userClient.InsertUser(ctx, newUser); err != nil {
 			return nil, apighandler.HttpError{StatusCode: http.StatusInternalServerError}
 		}

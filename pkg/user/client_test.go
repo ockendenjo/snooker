@@ -23,7 +23,7 @@ func Test_client(t *testing.T) {
 
 	newUser := User{
 		Email: email,
-		ID:    uuid.NewV7().String(),
+		ID:    uuid.NewV4().String(),
 	}
 	err := c.InsertUser(t.Context(), newUser)
 	require.NoError(t, err)
@@ -62,12 +62,12 @@ func Test_ScanUsers(t *testing.T) {
 	defer deleteFn()
 
 	// Insert user with points
-	userWithPoints := User{Email: "points@example.com", ID: uuid.NewV7().String(), TotalPoints: 50}
+	userWithPoints := User{Email: "points@example.com", ID: uuid.NewV4().String(), TotalPoints: 50}
 	err := c.InsertUser(t.Context(), userWithPoints)
 	require.NoError(t, err)
 
 	// Insert user without points — should be excluded from scan results
-	userNoPoints := User{Email: "nopoints@example.com", ID: uuid.NewV7().String(), TotalPoints: 0}
+	userNoPoints := User{Email: "nopoints@example.com", ID: uuid.NewV4().String(), TotalPoints: 0}
 	err = c.InsertUser(t.Context(), userNoPoints)
 	require.NoError(t, err)
 
@@ -96,7 +96,7 @@ func setupTableAndGetClient(t *testing.T) (Client, func()) {
 		o.BaseEndpoint = new("http://localhost:8000")
 	})
 
-	tableName := fmt.Sprintf("test-mpan-%s", uuid.NewV7().String())
+	tableName := fmt.Sprintf("test-mpan-%s", uuid.NewV4().String())
 
 	lbClient := NewClient(dynamoClient, tableName)
 
