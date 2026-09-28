@@ -62,7 +62,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Print("Manifest uploaded successfully\n")
+	fmt.Printf("Manifest (%s) uploaded successfully\n")
 }
 
 func processDir(ctx context.Context, s3Client *s3.Client, dir, bucket string, manifest map[string]string, wg *sync.WaitGroup, sem chan struct{}, errChan chan error, logger *log.Logger) bool {
@@ -103,15 +103,24 @@ func processDir(ctx context.Context, s3Client *s3.Client, dir, bucket string, ma
 	return false
 }
 
+func getManifestFile() string {
+	manifestFile := os.Getenv("MANIFEST_FILE")
+	if manifestFile == "" {
+		return "default.json"
+	}
+	return manifestFile
+}
+
 func putManifest(ctx context.Context, s3Client *s3.Client, manifest map[string]string, bucket string) error {
 	b, err := json.Marshal(manifest)
 	if err != nil {
 		return err
 	}
+	manifestFileName := getManifestFile()
 
 	_, err = s3Client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket:      &bucket,
-		Key:         new("lambda_manifests/default.json"),
+		Key:         new(fmt.Sprintf("lambda_manifests/%s", manifestFileName)),
 		Body:        bytes.NewReader(b),
 		ContentType: new("application/json"),
 	})
