@@ -62,7 +62,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Manifest (%s) uploaded successfully\n")
+	fmt.Printf("Manifest (%s) uploaded successfully\n", getManifestFile())
 }
 
 func processDir(ctx context.Context, s3Client *s3.Client, dir, bucket string, manifest map[string]string, wg *sync.WaitGroup, sem chan struct{}, errChan chan error, logger *log.Logger) bool {
