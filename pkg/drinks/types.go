@@ -35,46 +35,93 @@ const (
 )
 
 func (d *Drink) Validate() error {
-	if d.UserID == "" {
-		return errors.New("userID is required")
-	}
-	if d.Timestamp == nil {
-		return errors.New("timestamp is required")
-	}
-	if d.PubName == "" {
-		return errors.New("pubName is required")
-	}
-	if len(d.PubName) > MaxLengthPubName {
-		return fmt.Errorf("pubName must not exceed %d characters", MaxLengthPubName)
+	checkers := []func() error{
+		d.validateUserID,
+		d.validateTimestamp,
+		d.validateDrinkName,
+		d.validatePubName,
+		d.validateBrewery,
+		d.validateABV,
+		d.validateWith,
+		d.validateNotes,
 	}
 
-	if d.DrinkName == "" {
-		return errors.New("drinkName is required")
+	for _, checker := range checkers {
+		err := checker()
+		if err != nil {
+			return err
+		}
 	}
-	if len(d.DrinkName) > MaxLengthDrinkName {
-		return fmt.Errorf("drinkName must not exceed %d characters", MaxLengthDrinkName)
-	}
-	if d.Brewery == "" {
-		return errors.New("brewery is required")
-	}
-	if len(d.Brewery) > MaxLengthBrewery {
-		return fmt.Errorf("brewery must not exceed %d characters", MaxLengthBrewery)
-	}
-	if d.ABV == nil {
-		return errors.New("abv is required")
-	}
-	if *d.ABV < MinABV || *d.ABV > MaxABV {
-		return errors.New("abv outside allowable range")
-	}
+	return nil
+}
 
+func (d *Drink) validateNotes() error {
+	if d.Notes != nil && len(*d.Notes) > MaxLengthNotes {
+		return fmt.Errorf("notes must not exceed %d characters", MaxLengthNotes)
+	}
+	return nil
+}
+
+func (d *Drink) validateWith() error {
 	if d.With == "" {
 		return errors.New("with is required")
 	}
 	if len(d.With) > MaxLengthWith {
 		return fmt.Errorf("with must not exceed %d characters", MaxLengthWith)
 	}
-	if d.Notes != nil && len(*d.Notes) > MaxLengthNotes {
-		return fmt.Errorf("notes must not exceed %d characters", MaxLengthNotes)
+	return nil
+}
+
+func (d *Drink) validateABV() error {
+	if d.ABV == nil {
+		return errors.New("abv is required")
+	}
+	if *d.ABV < MinABV || *d.ABV > MaxABV {
+		return errors.New("abv outside allowable range")
+	}
+	return nil
+}
+
+func (d *Drink) validateBrewery() error {
+	if d.Brewery == "" {
+		return errors.New("brewery is required")
+	}
+	if len(d.Brewery) > MaxLengthBrewery {
+		return fmt.Errorf("brewery must not exceed %d characters", MaxLengthBrewery)
+	}
+	return nil
+}
+
+func (d *Drink) validatePubName() error {
+	if d.PubName == "" {
+		return errors.New("pubName is required")
+	}
+	if len(d.PubName) > MaxLengthPubName {
+		return fmt.Errorf("pubName must not exceed %d characters", MaxLengthPubName)
+	}
+	return nil
+}
+
+func (d *Drink) validateTimestamp() error {
+	if d.Timestamp == nil {
+		return errors.New("timestamp is required")
+	}
+	return nil
+}
+
+func (d *Drink) validateDrinkName() error {
+	if d.DrinkName == "" {
+		return errors.New("drinkName is required")
+	}
+	if len(d.DrinkName) > MaxLengthDrinkName {
+		return fmt.Errorf("drinkName must not exceed %d characters", MaxLengthDrinkName)
+	}
+	return nil
+}
+
+func (d *Drink) validateUserID() error {
+	if d.UserID == "" {
+		return errors.New("userID is required")
 	}
 	return nil
 }
